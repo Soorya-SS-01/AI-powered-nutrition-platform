@@ -2,6 +2,12 @@
 
 <div align="center">
 
+### 🎓 This project was developed during my SAP Labs Internship (May 2026 – June 2026).
+
+</div>
+
+<div align="center">
+
 [![Typing SVG](https://readme-typing-svg.demolab.com?font=Fira+Code&weight=600&size=22&duration=3000&pause=1000&color=0D6EFD&center=true&vCenter=true&width=650&lines=AI-Powered+Personalized+Diet+Plans;n8n+Workflow+Automation+%2B+Supabase;Built+during+SAP+Labs+Internship)](https://git.io/typing-svg)
 
 ![Python](https://img.shields.io/badge/HTML5-E34F26?style=flat-square&logo=html5&logoColor=white)
@@ -13,10 +19,6 @@
 ![Ollama](https://img.shields.io/badge/Ollama-000000?style=flat-square&logo=ollama&logoColor=white)
 
 </div>
-
----
-
-> ### 🎓 This project was developed during my **SAP Labs Internship (May 2026 – June 2026)**.
 
 ---
 
