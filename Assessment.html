@@ -1,0 +1,1464 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>NutriMyDiet — Client Assessment</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&family=Playfair+Display:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+<style>
+
+/* ── TOKENS ── */
+:root {
+  --green-dark:   #1E4D3A;
+  --green-mid:    #2D6A4F;
+  --green-btn:    #2C5F47;
+  --green-hover:  #1E4D3A;
+  --green-light:  #EBF4EF;
+  --green-accent: #52A077;
+  --mint-bg:      #E8F5EE;
+  --white:        #FFFFFF;
+  --ink:          #111A16;
+  --ink-soft:     #3D5046;
+  --muted:        #7A9085;
+  --border:       #D4E4DB;
+  --input-bg:     #F8FBFA;
+  --error:        #C0392B;
+  --error-bg:     #FDF3F2;
+  --success:      #276B50;
+  --success-bg:   #EAF5EF;
+  --amber:        #C8782A;
+  --page-bg:      #D6EBE0;
+  --r:            10px;
+}
+
+/* ── RESET ── */
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html { font-size: 16px; scroll-behavior: smooth; }
+body {
+  font-family: 'DM Sans', system-ui, sans-serif;
+  color: var(--ink);
+  background: var(--page-bg);
+  line-height: 1.65;
+  min-height: 100dvh;
+  position: relative;
+  overflow-x: hidden;
+}
+::selection { background: var(--green-light); }
+
+/* ── DECORATIVE BACKGROUND — fruit & leaf shapes scattered through the page ── */
+.bg-decor {
+  position: absolute;
+  z-index: 0;
+  pointer-events: none;
+  opacity: .5;
+}
+.bg-decor svg { display: block; }
+/* leaf top-left, near nav */
+.bg-decor-1 { top: 420px; left: -30px; width: 110px; }
+/* leaf cluster, mid page */
+.bg-decor-2 { top: 1180px; right: -20px; width: 90px; }
+/* small leaf cluster */
+.bg-decor-3 { top: 1900px; left: -15px; width: 80px; }
+/* berry cluster */
+.bg-decor-4 { top: 2650px; right: -25px; width: 95px; }
+/* leaf, lower page */
+.bg-decor-5 { top: 3400px; left: -25px; width: 100px; }
+/* berry cluster, near submit */
+.bg-decor-6 { top: 4150px; right: -15px; width: 80px; }
+@media (max-width: 700px) {
+  .bg-decor { opacity: .35; transform: scale(.7); }
+}
+
+/* ── PROGRESS BAR ── */
+#progress-bar {
+  position: fixed; top: 0; left: 0; height: 3px;
+  background: linear-gradient(90deg, var(--green-btn), var(--green-accent));
+  width: 0%; z-index: 999;
+  transition: width .25s ease;
+  border-radius: 0 2px 2px 0;
+}
+
+/* ── NAV ── */
+.nav {
+  position: sticky; top: 0; z-index: 100;
+  background: rgba(255,255,255,.96);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid var(--border);
+  box-shadow: 0 1px 8px rgba(30,77,58,.06);
+}
+.nav-inner {
+  max-width: 860px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 0 24px; height: 56px; gap: 16px;
+}
+.nav-brand {
+  display: flex; align-items: center; gap: .5rem;
+  text-decoration: none; flex-shrink: 0;
+}
+.nav-brand-icon {
+  width: 28px; height: 28px;
+  background: var(--green-dark);
+  border-radius: 7px;
+  display: flex; align-items: center; justify-content: center;
+}
+.nav-brand-name {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .95rem; font-weight: 700;
+  color: var(--green-dark); letter-spacing: -.01em;
+}
+.nav-brand-name em { font-style: italic; font-weight: 400; }
+
+.nav-steps {
+  display: flex; gap: 2px; overflow-x: auto;
+  scrollbar-width: none;
+}
+.nav-steps::-webkit-scrollbar { display: none; }
+.nav-step {
+  font-size: .7rem; font-weight: 500; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--muted);
+  padding: 5px 11px; border-radius: 20px; white-space: nowrap;
+  border: none; background: transparent; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: color .15s, background .15s;
+}
+.nav-step:hover { color: var(--green-dark); background: var(--green-light); }
+.nav-step.active { color: var(--green-dark); background: var(--green-light); font-weight: 600; }
+
+/* ── PAGE WRAPPER ── */
+.page-outer {
+  max-width: 860px; margin: 0 auto;
+  padding: 0 24px 80px;
+  position: relative;
+  z-index: 1;
+}
+
+/* ── HEADER ── */
+.site-header {
+  padding: 40px 0 0;
+  border-bottom: none;
+  margin-bottom: 0;
+}
+.site-header-inner {
+  display: flex;
+  align-items: center;
+  gap: 32px;
+  padding-bottom: 0;
+}
+.site-header-text { flex: 1.15; min-width: 0; }
+.header-eyebrow {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: .68rem; font-weight: 700; letter-spacing: .1em;
+  text-transform: uppercase; color: var(--green-dark);
+  background: var(--green-light);
+  border: 1px solid rgba(44,95,71,.12);
+  border-radius: 20px; padding: .28rem .8rem;
+  margin-bottom: 1.1rem;
+}
+.site-header h1 {
+  font-family: 'Playfair Display', Georgia, serif;
+  font-size: clamp(1.8rem, 4vw, 2.6rem);
+  font-weight: 700; line-height: 1.15;
+  color: var(--green-dark); margin-bottom: .75rem;
+  letter-spacing: -.02em;
+}
+.site-header h1 em {
+  font-style: italic; font-weight: 400;
+  color: var(--green-accent);
+}
+.site-header p {
+  font-size: .9rem; color: var(--ink-soft);
+  max-width: 480px; line-height: 1.7;
+}
+.header-meta {
+  display: flex; gap: 20px; margin-top: 20px; flex-wrap: wrap;
+}
+.header-meta-item {
+  display: flex; align-items: center; gap: 7px;
+  font-size: .78rem; color: var(--muted);
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 20px; padding: .3rem .8rem;
+}
+.meta-dot {
+  width: 9px; height: 9px;
+  background: var(--green-accent); flex-shrink: 0;
+  clip-path: path('M9 4.5C9 4.5 7.5 0 0 0C0 0 0 9 6.5 9C8.2 9 9 6.8 9 4.5Z');
+  transform: rotate(-20deg);
+}
+
+/* ── HEADER BOWL PHOTO ── */
+.header-bowl {
+  flex: .85;
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  aspect-ratio: 4 / 3.1;
+  box-shadow: 0 16px 40px rgba(30,77,58,.18);
+  flex-shrink: 0;
+}
+.header-bowl img {
+  width: 100%; height: 100%;
+  object-fit: cover;
+  display: block;
+}
+.header-bowl::after {
+  content: '';
+  position: absolute; inset: 0;
+  background: linear-gradient(160deg, rgba(30,77,58,.06) 0%, transparent 45%);
+  pointer-events: none;
+}
+/* decorative organic accents behind photo — leaf-blob shapes, not circles */
+.header-bowl-decor {
+  position: absolute;
+  width: 100px; height: 100px;
+  background: rgba(168,217,192,.55);
+  top: -22px; right: -24px;
+  z-index: -1;
+  border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%;
+}
+.header-bowl-decor-2 {
+  position: absolute;
+  width: 60px; height: 60px;
+  background: rgba(82,160,119,.3);
+  bottom: -16px; left: -18px;
+  z-index: -1;
+  border-radius: 60% 40% 35% 65% / 55% 45% 55% 45%;
+}
+.header-bowl-wrap { position: relative; flex: .85; flex-shrink: 0; }
+
+.site-header-divider {
+  border: none; border-top: 1px solid var(--border);
+  margin-top: 32px;
+}
+
+@media (max-width: 700px) {
+  .site-header-inner { flex-direction: column-reverse; gap: 20px; }
+  .header-bowl-wrap, .header-bowl { width: 100%; flex: none; aspect-ratio: 16/9; }
+}
+
+/* ── MESSAGES ── */
+.form-message {
+  display: none; padding: 16px 20px;
+  border-radius: var(--r); margin: 24px 0 0;
+  font-size: .87rem; gap: 12px; align-items: flex-start;
+}
+.form-message.show { display: flex; }
+.form-message.success {
+  background: var(--success-bg); border: 1px solid #B2DDCA;
+  color: var(--success);
+}
+.form-message.error {
+  background: var(--error-bg); border: 1px solid #F0C5C0;
+  color: var(--error);
+}
+.form-message strong { display: block; margin-bottom: 2px; }
+
+/* ── SECTION CARD ── */
+.form-section {
+  background: var(--white);
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  margin-top: 16px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(30,77,58,.05);
+  transition: box-shadow .2s;
+}
+.form-section:hover {
+  box-shadow: 0 4px 16px rgba(30,77,58,.09);
+}
+
+.section-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding: 20px 24px; cursor: pointer; gap: 16px;
+  user-select: none;
+  border-bottom: 1px solid transparent;
+  transition: background .15s, border-color .15s;
+}
+.section-header:hover { background: var(--input-bg); }
+.section-header.open {
+  border-bottom-color: var(--border);
+  background: var(--input-bg);
+}
+
+.section-header-left { display: flex; align-items: center; gap: 14px; }
+
+.section-num-tag {
+  font-size: .65rem; font-weight: 700; letter-spacing: .08em;
+  text-transform: uppercase; color: var(--green-dark);
+  background: var(--green-light);
+  border: 1px solid rgba(44,95,71,.12);
+  border-radius: 6px; padding: 4px 9px;
+  white-space: nowrap; flex-shrink: 0;
+}
+
+.section-title {
+  font-family: 'DM Sans', sans-serif;
+  font-size: .95rem; font-weight: 600;
+  color: var(--ink); line-height: 1.3;
+}
+.section-desc {
+  font-size: .77rem; color: var(--muted); margin-top: 2px;
+}
+.chevron {
+  color: var(--muted); transition: transform .2s ease, color .15s; flex-shrink: 0;
+}
+.section-header.open .chevron { transform: rotate(180deg); color: var(--green-dark); }
+
+.section-body {
+  display: none; padding: 24px;
+}
+.section-body.open { display: block; }
+
+/* ── FIELDS ── */
+.field-group { margin-bottom: 18px; }
+.field-grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.field-grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+@media (max-width: 620px) {
+  .field-grid-2, .field-grid-3 { grid-template-columns: 1fr; }
+}
+
+label.field-label {
+  display: block; font-size: .78rem; font-weight: 600;
+  color: var(--ink-soft); margin-bottom: 6px; letter-spacing: .01em;
+}
+label.field-label .req { color: var(--amber); margin-left: 2px; }
+
+.field-hint {
+  font-size: .74rem; color: var(--muted); margin-bottom: 8px;
+  line-height: 1.55; font-style: italic;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="tel"],
+input[type="date"],
+select,
+textarea {
+  width: 100%; padding: 10px 13px;
+  border: 1.5px solid var(--border);
+  border-radius: var(--r);
+  font-family: 'DM Sans', system-ui, sans-serif;
+  font-size: .88rem; color: var(--ink);
+  background: var(--input-bg);
+  transition: border-color .15s, box-shadow .15s;
+  appearance: none; -webkit-appearance: none;
+}
+input:focus, select:focus, textarea:focus {
+  outline: none;
+  border-color: var(--green-btn);
+  box-shadow: 0 0 0 3px rgba(44,95,71,.11);
+  background: var(--white);
+}
+input.invalid, select.invalid, textarea.invalid {
+  border-color: var(--error);
+  box-shadow: 0 0 0 3px rgba(192,57,43,.09);
+}
+input::placeholder, textarea::placeholder { color: #B0C4BB; }
+textarea { resize: vertical; min-height: 88px; line-height: 1.55; }
+
+.select-wrap { position: relative; }
+.select-wrap::after {
+  content: '';
+  position: absolute; right: 12px; top: 50%;
+  transform: translateY(-50%);
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 5px solid var(--muted);
+  pointer-events: none;
+}
+.select-wrap select { padding-right: 32px; }
+
+/* ── RADIO / CHECKBOX ── */
+.options-inline { display: flex; flex-wrap: wrap; gap: 7px; }
+.options-list   { display: flex; flex-direction: column; gap: 6px; }
+
+.option-item {
+  display: inline-flex; align-items: flex-start; gap: 8px;
+  padding: 8px 13px; border-radius: 8px;
+  border: 1.5px solid var(--border);
+  cursor: pointer; font-size: .84rem; color: var(--ink-soft);
+  background: var(--input-bg);
+  transition: border-color .15s, background .15s, color .15s;
+  font-family: 'DM Sans', sans-serif;
+}
+.option-item:hover { border-color: var(--green-accent); background: var(--green-light); color: var(--green-dark); }
+.option-item input {
+  margin: 0; flex-shrink: 0; margin-top: 2px;
+  accent-color: var(--green-btn); width: 14px; height: 14px;
+}
+.option-item:has(input:checked) {
+  border-color: var(--green-btn); background: var(--green-light);
+}
+.option-item:has(input:checked) span { color: var(--green-dark); font-weight: 600; }
+
+.cb-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+  gap: 7px;
+}
+@media (max-width: 480px) { .cb-grid { grid-template-columns: 1fr; } }
+
+/* ── RECALL ── */
+.recall-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+@media (max-width: 620px) { .recall-grid { grid-template-columns: 1fr; } }
+
+/* ── SYMPTOMS ── */
+.symptom-category { margin-bottom: 20px; }
+.symptom-cat-label {
+  font-size: .7rem; font-weight: 700; letter-spacing: .09em;
+  text-transform: uppercase; color: var(--green-dark);
+  margin-bottom: 9px; padding-bottom: 7px;
+  border-bottom: 1px solid var(--border);
+}
+
+/* ── DIVIDER ── */
+.section-divider { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+
+/* ── NOTE CARD ── */
+.note-card {
+  background: #FDF6EE; border: 1px solid #E8D0B0;
+  border-radius: var(--r); padding: 14px 18px;
+  font-size: .82rem; color: #7A4A20; line-height: 1.6;
+  margin-top: 18px;
+}
+.note-card strong { color: var(--green-dark); }
+
+/* ── RECALL HINT ── */
+.recall-hint {
+  font-size: .82rem; background: var(--green-light); color: var(--ink-soft);
+  border-radius: var(--r); padding: 13px 16px;
+  margin-bottom: 18px; line-height: 1.65;
+  border: 1px solid rgba(44,95,71,.1);
+}
+.recall-hint em { color: var(--green-dark); font-style: normal; font-weight: 500; }
+
+/* ── FIELD ERROR ── */
+.field-error {
+  display: none; font-size: .74rem; color: var(--error);
+  margin-top: 5px; font-weight: 500;
+}
+.field-error.show { display: block; }
+
+/* ── SUBMIT AREA ── */
+.submit-area {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 28px 24px;
+  margin-top: 16px;
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 20px; flex-wrap: wrap;
+  box-shadow: 0 2px 8px rgba(30,77,58,.05);
+}
+.submit-btn {
+  display: inline-flex; align-items: center; gap: 9px;
+  background: var(--green-btn); color: #fff;
+  font-size: .92rem; font-weight: 600;
+  padding: 13px 36px; border-radius: var(--r);
+  border: none; cursor: pointer;
+  font-family: 'DM Sans', sans-serif;
+  transition: background .18s, transform .12s, box-shadow .18s;
+  letter-spacing: .01em;
+  box-shadow: 0 3px 14px rgba(44,95,71,.28);
+}
+.submit-btn:hover:not(:disabled) {
+  background: var(--green-hover);
+  transform: translateY(-1px);
+  box-shadow: 0 5px 20px rgba(44,95,71,.35);
+}
+.submit-btn:active:not(:disabled) { transform: translateY(0); }
+.submit-btn:disabled { opacity: .65; cursor: not-allowed; }
+.submit-sub {
+  font-size: .76rem; color: var(--muted); line-height: 1.55;
+  max-width: 340px;
+}
+
+/* ── SPINNER ── */
+.spinner {
+  width: 15px; height: 15px;
+  border: 2px solid rgba(255,255,255,.3);
+  border-top-color: #fff; border-radius: 50%;
+  animation: spin .7s linear infinite; display: none;
+}
+@keyframes spin { to { transform: rotate(360deg); } }
+
+/* ── FOOTER ── */
+.site-footer {
+  max-width: 860px; margin: 0 auto;
+  padding: 24px 24px 48px;
+  border-top: 1px solid var(--border);
+  font-size: .76rem; color: var(--muted); line-height: 1.8;
+}
+.site-footer a { color: var(--green-dark); text-decoration: none; }
+.site-footer a:hover { text-decoration: underline; }
+
+</style>
+</head>
+<body>
+
+<!-- ══ Decorative background shapes — fruit & leaf accents scattered through the page ══ -->
+<div class="bg-decor bg-decor-1" aria-hidden="true">
+  <svg viewBox="0 0 110 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5 75 C5 75 12 20 90 8 C90 8 92 55 35 78 C20 84 8 82 5 75Z" fill="#A8D9C0" opacity=".55"/>
+    <path d="M8 74 Q45 50 86 12" stroke="#7FC2A0" stroke-width="1.5" opacity=".5" fill="none"/>
+  </svg>
+</div>
+
+<div class="bg-decor bg-decor-2" aria-hidden="true">
+  <svg viewBox="0 0 90 90" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M45 10 C45 10 70 18 72 45 C74 70 50 80 45 80 C40 80 16 70 18 45 C20 18 45 10 45 10Z" fill="#8DD4AC" opacity=".4"/>
+    <path d="M45 14 L45 76" stroke="#5DA86E" stroke-width="1.3" opacity=".4"/>
+    <path d="M45 30 Q55 32 60 40" stroke="#5DA86E" stroke-width="1" opacity=".35" fill="none"/>
+    <path d="M45 50 Q35 52 30 60" stroke="#5DA86E" stroke-width="1" opacity=".35" fill="none"/>
+  </svg>
+</div>
+
+<div class="bg-decor bg-decor-3" aria-hidden="true">
+  <svg viewBox="0 0 80 70" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M4 60 C4 60 8 16 70 6 C70 6 70 42 26 62 C14 67 6 65 4 60Z" fill="#8DD4AC" opacity=".4" transform="rotate(-15 40 35)"/>
+  </svg>
+</div>
+
+<div class="bg-decor bg-decor-4" aria-hidden="true">
+  <svg viewBox="0 0 95 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="30" cy="35" r="14" fill="#7B5EA7" opacity=".3"/>
+    <circle cx="50" cy="25" r="11" fill="#8D6FB8" opacity=".3"/>
+    <circle cx="55" cy="48" r="13" fill="#7B5EA7" opacity=".3"/>
+    <circle cx="35" cy="55" r="10" fill="#8D6FB8" opacity=".3"/>
+    <path d="M42 12 Q45 4 52 6" stroke="#5DA86E" stroke-width="2" opacity=".4" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<div class="bg-decor bg-decor-5" aria-hidden="true">
+  <svg viewBox="0 0 100 85" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <path d="M5 70 C5 70 10 18 80 6 C80 6 82 48 32 72 C18 78 7 76 5 70Z" fill="#A8D9C0" opacity=".45" transform="rotate(8 50 40)"/>
+  </svg>
+</div>
+
+<div class="bg-decor bg-decor-6" aria-hidden="true">
+  <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+    <circle cx="26" cy="32" r="12" fill="#D4706A" opacity=".32"/>
+    <circle cx="44" cy="24" r="9" fill="#E08A7C" opacity=".32"/>
+    <circle cx="50" cy="44" r="11" fill="#D4706A" opacity=".32"/>
+    <circle cx="30" cy="52" r="9" fill="#E08A7C" opacity=".32"/>
+    <path d="M38 10 Q42 3 50 5" stroke="#5DA86E" stroke-width="2" opacity=".4" fill="none" stroke-linecap="round"/>
+  </svg>
+</div>
+
+<div id="progress-bar"></div>
+
+<!-- NAV -->
+<nav class="nav" aria-label="Form navigation">
+  <div class="nav-inner">
+    <a class="nav-brand" href="#">
+      <div class="nav-brand-icon">
+        <svg width="15" height="15" viewBox="0 0 15 15" fill="none" aria-hidden="true">
+          <path d="M2 13 C2 13 4 6 13 2 C13 2 13 11 4 13 Z" fill="rgba(255,255,255,.95)"/>
+          <path d="M2 13 L7.5 7.5" stroke="rgba(255,255,255,.5)" stroke-width="1.1" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <span class="nav-brand-name">Nutri<em>My</em>Diet</span>
+    </a>
+    <div class="nav-steps" role="list">
+      <button class="nav-step" data-target="sec1">Personal</button>
+      <button class="nav-step" data-target="sec2">Training</button>
+      <button class="nav-step" data-target="sec3">Nutrition</button>
+      <button class="nav-step" data-target="sec4">Recall</button>
+      <button class="nav-step" data-target="sec5">Allergy</button>
+      <button class="nav-step" data-target="sec5b">Family</button>
+      <button class="nav-step" data-target="sec6">Medical</button>
+      <button class="nav-step" data-target="sec6b">Injuries</button>
+      <button class="nav-step" data-target="sec7">Symptoms</button>
+      <button class="nav-step" data-target="sec8">Medications</button>
+    </div>
+  </div>
+</nav>
+
+<!-- HEADER -->
+<div class="page-outer">
+<header class="site-header">
+  <div class="site-header-inner">
+    <div class="site-header-text">
+      <div class="header-eyebrow">
+        <svg width="10" height="10" viewBox="0 0 10 10" fill="none" aria-hidden="true">
+          <path d="M5 0l.9 3.1H9L6.5 5 7.4 8.1 5 6.3 2.6 8.1l.9-3.1L1 3.1h3.1Z" fill="currentColor"/>
+        </svg>
+        General / Lifestyle Assessment
+      </div>
+      <h1>Tell us about<br><em>yourself</em></h1>
+      <p>Fill in as much detail as you can — this helps your nutritionist personalise your plan. Fields marked <span style="color:var(--amber)">✱</span> are required.</p>
+      <div class="header-meta">
+        <div class="header-meta-item"><span class="meta-dot"></span> 10 sections</div>
+        <div class="header-meta-item"><span class="meta-dot"></span> ~15 minutes</div>
+        <div class="header-meta-item"><span class="meta-dot"></span> Secure &amp; confidential</div>
+      </div>
+    </div>
+    <div class="header-bowl-wrap">
+      <div class="header-bowl-decor" aria-hidden="true"></div>
+      <div class="header-bowl-decor-2" aria-hidden="true"></div>
+      <div class="header-bowl">
+        <img
+          src="https://images.unsplash.com/photo-1490645935967-10de6ba17061?w=700&q=80&auto=format&fit=crop"
+          alt="Fresh grain bowl with roasted vegetables, greens and seeds"
+          loading="eager"
+          onerror="this.parentElement.style.background='linear-gradient(160deg,#cfe9da,#a8d9c0)'; this.style.display='none';"
+        />
+      </div>
+    </div>
+  </div>
+  <hr class="site-header-divider">
+</header>
+
+<!-- FORM WRAP -->
+<div class="form-wrap" style="padding:0;">
+
+  <!-- Messages -->
+  <div id="successMsg" class="form-message success" role="alert">
+    <div>
+      <strong>Assessment submitted successfully!</strong>
+      Your nutritionist will review your details and be in touch shortly. The form has been reset.
+    </div>
+  </div>
+  <div id="errorMsg" class="form-message error" role="alert">
+    <div>
+      <strong>Submission failed</strong>
+      Unable to reach the server. Please check your connection and try again.
+    </div>
+  </div>
+
+<form id="nutritionForm" novalidate>
+
+  <!-- ── SECTION 1 — PERSONAL ── -->
+  <section class="form-section" id="sec1">
+    <div class="section-header open" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">01</span>
+        <div>
+          <div class="section-title">Personal Info</div>
+          <div class="section-desc">Your basic details — helps us personalise your plan from day one</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body open">
+      <div class="field-grid-2">
+        <div class="field-group">
+          <label class="field-label" for="fullName">Full Name <span class="req">*</span></label>
+          <input type="text" id="fullName" name="fullName" placeholder="Your full name" required>
+          <div class="field-error" id="err_fullName">Full name is required.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="dateOfBirth">Date of Birth <span class="req">*</span></label>
+          <input type="date" id="dateOfBirth" name="dateOfBirth" required>
+          <div class="field-error" id="err_dateOfBirth">Date of birth is required.</div>
+        </div>
+      </div>
+      <div class="field-grid-2">
+        <div class="field-group">
+          <label class="field-label" for="contactNumber">Contact Number <span class="req">*</span></label>
+          <input type="tel" id="contactNumber" name="contactNumber" placeholder="e.g. +91 98765 43210" required>
+          <div class="field-error" id="err_contactNumber">Contact number is required.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="email">Email <span class="req">*</span></label>
+          <input type="email" id="email" name="email" placeholder="you@email.com" required>
+          <div class="field-error" id="err_email">A valid email is required.</div>
+        </div>
+      </div>
+      <div class="field-grid-3">
+        <div class="field-group">
+          <label class="field-label" for="nationality">Nationality</label>
+          <div class="select-wrap">
+            <select id="nationality" name="nationality">
+              <option value="">Choose</option>
+              <option>India</option><option>Afghanistan</option><option>Albania</option><option>Algeria</option>
+              <option>Argentina</option><option>Australia</option><option>Austria</option><option>Bangladesh</option>
+              <option>Belgium</option><option>Brazil</option><option>Canada</option><option>China</option>
+              <option>Denmark</option><option>Egypt</option><option>Finland</option><option>France</option>
+              <option>Germany</option><option>Ghana</option><option>Greece</option><option>Hungary</option>
+              <option>Indonesia</option><option>Iran</option><option>Iraq</option><option>Ireland</option>
+              <option>Israel</option><option>Italy</option><option>Japan</option><option>Jordan</option>
+              <option>Kenya</option><option>Malaysia</option><option>Mexico</option><option>Morocco</option>
+              <option>Nepal</option><option>Netherlands</option><option>New Zealand</option><option>Nigeria</option>
+              <option>Norway</option><option>Pakistan</option><option>Philippines</option><option>Poland</option>
+              <option>Portugal</option><option>Qatar</option><option>Russia</option><option>Saudi Arabia</option>
+              <option>Singapore</option><option>South Africa</option><option>South Korea</option><option>Spain</option>
+              <option>Sri Lanka</option><option>Sweden</option><option>Switzerland</option><option>Thailand</option>
+              <option>Turkey</option><option>United Arab Emirates (UAE)</option><option>United Kingdom (UK)</option>
+              <option>United States of America (USA)</option><option>Vietnam</option><option>Others</option>
+            </select>
+          </div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="occupation">Occupation</label>
+          <input type="text" id="occupation" name="occupation" placeholder="e.g. Student, Athlete, Engineer…">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="bloodGroup">Blood Group</label>
+          <div class="select-wrap">
+            <select id="bloodGroup" name="bloodGroup">
+              <option value="">Choose</option>
+              <option>A +ve</option><option>A -ve</option>
+              <option>AB +ve</option><option>AB -ve</option>
+              <option>B +ve</option><option>B -ve</option>
+              <option>O +ve</option><option>O -ve</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      <div class="field-grid-2">
+        <div class="field-group">
+          <label class="field-label" for="weight">Weight <span class="req">*</span></label>
+          <input type="text" id="weight" name="weight" placeholder='e.g. "72 KG" or "158 LBS"' required>
+          <div class="field-error" id="err_weight">Weight is required.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="height">Height <span class="req">*</span></label>
+          <input type="text" id="height" name="height" placeholder='e.g. "175 CM" or "5 ft 9 in"' required>
+          <div class="field-error" id="err_height">Height is required.</div>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="residentialAddress">Residential Address <span class="req">*</span></label>
+        <textarea id="residentialAddress" name="residentialAddress" placeholder="Your home address" rows="2" required></textarea>
+        <div class="field-error" id="err_residentialAddress">Residential address is required.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="workSchoolTimings">Work / School Timings and Days</label>
+        <div class="field-hint">Helps us place meals around your daily schedule — include breaks, lunch windows, commute times if relevant.</div>
+        <textarea id="workSchoolTimings" name="workSchoolTimings" rows="3" placeholder="e.g. Mon–Fri office 9am–6pm"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="goals">List 3 Goals / Areas to Work On <span class="req">*</span></label>
+        <div class="field-hint">Be specific — these guide your entire program. e.g. 1. Improve swim times for nationals  2. Gain 3 kg of muscle  3. Reduce body fat to 12%</div>
+        <textarea id="goals" name="goals" rows="4" placeholder="1.&#10;2.&#10;3." required></textarea>
+        <div class="field-error" id="err_goals">Please list your goals.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="additionalInfo">Additional Information</label>
+        <div class="field-hint">Anything else about your lifestyle, schedule or situation that we should know…</div>
+        <textarea id="additionalInfo" name="additionalInfo" rows="3" placeholder="Any additional context…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 2 — TRAINING ── -->
+  <section class="form-section" id="sec2">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">02</span>
+        <div>
+          <div class="section-title">Sport or Exercise Training Routine</div>
+          <div class="section-desc">Timings feed directly into your meal plan grid — be as specific as you can</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Do you currently train or exercise? <span class="req">*</span></label>
+        <div class="options-inline">
+          <label class="option-item">
+            <input type="radio" id="trainsYes" name="currentlyTrains" value="Yes — I train / exercise regularly" required>
+            <span>Yes — I train / exercise regularly</span>
+          </label>
+          <label class="option-item">
+            <input type="radio" id="trainsNo" name="currentlyTrains" value="No — I do not train currently">
+            <span>No — I do not train currently</span>
+          </label>
+        </div>
+        <div class="field-error" id="err_currentlyTrains">Please select an option.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">Sport / Training Type (select all that apply)</label>
+        <div class="field-hint">Sport-specific training — football, swimming, cricket, athletics etc.</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="sportType" value="Football / Soccer"><span>Football / Soccer</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Cricket"><span>Cricket</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Swimming"><span>Swimming</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Athletics / Track & Field"><span>Athletics / Track &amp; Field</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Basketball"><span>Basketball</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Badminton"><span>Badminton</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Tennis"><span>Tennis</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Volleyball"><span>Volleyball</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Hockey"><span>Hockey</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Rugby"><span>Rugby</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Martial Arts / MMA"><span>Martial Arts / MMA</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Cycling"><span>Cycling</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Rowing"><span>Rowing</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Wrestling"><span>Wrestling</span></label>
+          <label class="option-item"><input type="checkbox" name="sportType" value="Others"><span>Others</span></label>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="trainingScheduleSport">Training Schedule — Sport / Sport-specific sessions</label>
+        <div class="field-hint">e.g. Swimming — Mon, Wed, Fri · 6:00am–8:00am · Football — Tue, Thu · 5:00pm–7:00pm</div>
+        <textarea id="trainingScheduleSport" name="trainingScheduleSport" rows="3" placeholder="List your sport training days and times…"></textarea>
+      </div>
+      <hr class="section-divider">
+      <div class="field-group">
+        <label class="field-label">General Fitness Type (select all that apply)</label>
+        <div class="field-hint">Gym, yoga, dance, S&amp;C, Pilates, CrossFit, aerobics etc.</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Gym / Weight Training"><span>Gym / Weight Training</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Yoga"><span>Yoga</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Pilates"><span>Pilates</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="CrossFit"><span>CrossFit</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Dance / Zumba"><span>Dance / Zumba</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Strength & Conditioning"><span>Strength &amp; Conditioning</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Aerobics"><span>Aerobics</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="HIIT"><span>HIIT</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Running / Jogging"><span>Running / Jogging</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Walking"><span>Walking</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Cycling"><span>Cycling</span></label>
+          <label class="option-item"><input type="checkbox" name="fitnessType" value="Others"><span>Others</span></label>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="trainingScheduleFitness">Training Schedule — General Fitness sessions</label>
+        <div class="field-hint">e.g. Gym — Mon, Wed, Fri · 7:00am–8:30am · Yoga — Sat · 8:00am–9:00am</div>
+        <textarea id="trainingScheduleFitness" name="trainingScheduleFitness" rows="3" placeholder="List your fitness session days and times…"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="trainingNotes">Training Notes</label>
+        <div class="field-hint">Competition schedule, upcoming events, pre-season / off-season, anything relevant.</div>
+        <textarea id="trainingNotes" name="trainingNotes" rows="3" placeholder="e.g. State championship in March, schedule varies on match days…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 3 — NUTRITION ── -->
+  <section class="form-section" id="sec3">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">03</span>
+        <div>
+          <div class="section-title">Nutrition</div>
+          <div class="section-desc">Helps us build a plan you'll actually enjoy eating and can sustain</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Food Preference <span class="req">*</span></label>
+        <div class="options-inline">
+          <label class="option-item"><input type="radio" id="fpNonVeg" name="foodPreference" value="Non-Vegetarian" required><span>Non-Vegetarian</span></label>
+          <label class="option-item"><input type="radio" name="foodPreference" value="Non-Veg (Occasionally)"><span>Non-Veg (Occasionally)</span></label>
+          <label class="option-item"><input type="radio" name="foodPreference" value="Eggetarian"><span>Eggetarian</span></label>
+          <label class="option-item"><input type="radio" name="foodPreference" value="Pescetarian"><span>Pescetarian</span></label>
+          <label class="option-item"><input type="radio" name="foodPreference" value="Vegetarian"><span>Vegetarian</span></label>
+          <label class="option-item"><input type="radio" name="foodPreference" value="Vegan"><span>Vegan</span></label>
+        </div>
+        <div class="field-error" id="err_foodPreference">Please select a food preference.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label">How much water do you drink per day? <span class="req">*</span></label>
+        <div class="options-inline">
+          <label class="option-item"><input type="radio" id="water1" name="waterIntake" value="0 – 2 L" required><span>0 – 2 L</span></label>
+          <label class="option-item"><input type="radio" name="waterIntake" value="2 – 4 L"><span>2 – 4 L</span></label>
+          <label class="option-item"><input type="radio" name="waterIntake" value="> 4 L"><span>&gt; 4 L</span></label>
+        </div>
+        <div class="field-error" id="err_waterIntake">Please select water intake.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="foodsDislike">Foods You Dislike or Avoid <span class="req">*</span></label>
+        <div class="field-hint">These will never appear in your plan. e.g. Bitter gourd, Brinjal, Raw onion, Mushroom…</div>
+        <textarea id="foodsDislike" name="foodsDislike" rows="3" placeholder="List foods you dislike or avoid…" required></textarea>
+        <div class="field-error" id="err_foodsDislike">This field is required.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="foodsEnjoy">Foods You Enjoy and Want Included</label>
+        <div class="field-hint">Your nutritionist will review each item and include what's clinically appropriate.</div>
+        <textarea id="foodsEnjoy" name="foodsEnjoy" rows="3" placeholder="List foods you enjoy…"></textarea>
+      </div>
+      <div class="field-grid-2">
+        <div class="field-group">
+          <label class="field-label" for="cookingOil">What type of oil do you use when cooking?</label>
+          <input type="text" id="cookingOil" name="cookingOil" placeholder="e.g. Coconut oil, Groundnut oil, Olive oil, Ghee…">
+        </div>
+        <div class="field-group">
+          <label class="field-label" for="eatOutFrequency">How many times a week do you eat out?</label>
+          <div class="field-hint">Work canteen, restaurants, ordering in — all count.</div>
+          <input type="text" id="eatOutFrequency" name="eatOutFrequency" placeholder="e.g. 2–3 times for lunch at work, weekends socially">
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="alcoholConsumption">If you consume alcohol — how many times a week and which type? <span class="req">*</span></label>
+        <input type="text" id="alcoholConsumption" name="alcoholConsumption" placeholder="e.g. Beer, 1–2 times on weekends / None" required>
+        <div class="field-error" id="err_alcoholConsumption">This field is required.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="smokingDrugs">Do you smoke or use recreational drugs? <span class="req">*</span></label>
+        <input type="text" id="smokingDrugs" name="smokingDrugs" placeholder="e.g. Non-smoker / Occasionally / Yes — cigarettes" required>
+        <div class="field-error" id="err_smokingDrugs">This field is required.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="nonVegDaysAvoided">Any specific days where non-veg food is avoided? <span class="req">*</span></label>
+        <input type="text" id="nonVegDaysAvoided" name="nonVegDaysAvoided" placeholder="e.g. Tuesdays and Fridays / None" required>
+        <div class="field-error" id="err_nonVegDaysAvoided">This field is required.</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 4 — DIETARY RECALL ── -->
+  <section class="form-section" id="sec4">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">04</span>
+        <div>
+          <div class="section-title">Dietary Recall</div>
+          <div class="section-desc">Tells us your current eating patterns so we know what to build from</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="recall-hint">
+        For each meal, provide approximate time and a description with quantities.<br>
+        <em>e.g. 7:30 AM — 2 idlis with sambar and coconut chutney, 1 cup filter coffee with milk</em><br>
+        Leave blank if you skip that meal.
+      </div>
+      <div class="recall-grid">
+        <div class="field-group"><label class="field-label" for="mealEarlyMorning">🌅 Early Morning (wake-up)</label><textarea id="mealEarlyMorning" name="mealEarlyMorning" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealBreakfast">🍳 Breakfast</label><textarea id="mealBreakfast" name="mealBreakfast" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealMidMorning">🍎 Mid-Morning Snack</label><textarea id="mealMidMorning" name="mealMidMorning" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealLunch">🍱 Lunch</label><textarea id="mealLunch" name="mealLunch" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealEveningSnack">☕ Evening Snack</label><textarea id="mealEveningSnack" name="mealEveningSnack" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealDinner">🌙 Dinner</label><textarea id="mealDinner" name="mealDinner" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealPostDinner">🛏️ Post-Dinner / Bed Time</label><textarea id="mealPostDinner" name="mealPostDinner" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealPreWorkout">⚡ Pre-Workout</label><textarea id="mealPreWorkout" name="mealPreWorkout" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealDuringWorkout">🏃 During-Workout</label><textarea id="mealDuringWorkout" name="mealDuringWorkout" rows="3" placeholder="Time + what you consume…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealPostWorkout">💪 Post-Workout</label><textarea id="mealPostWorkout" name="mealPostWorkout" rows="3" placeholder="Time + what you eat…"></textarea></div>
+        <div class="field-group"><label class="field-label" for="mealBeverage">🥤 Beverage / Other</label><textarea id="mealBeverage" name="mealBeverage" rows="3" placeholder="Tea, coffee, juices, supplements…"></textarea></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5 — ALLERGY ── -->
+  <section class="form-section" id="sec5">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">05</span>
+        <div>
+          <div class="section-title">Allergy</div>
+          <div class="section-desc">These foods will never appear in your plan — no exceptions</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Select all allergies that apply <span class="req">*</span></label>
+        <div class="field-hint">These will never appear in your plan under any circumstances</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="allergies" value="N/A — Not Applicable"><span>N/A — Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="GL — Gluten Allergy"><span>GL — Gluten Allergy</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="LACT — Lactose Intolerance"><span>LACT — Lactose Intolerance</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="MLK — Milk Allergy"><span>MLK — Milk Allergy</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="HYP — Soya & Millets"><span>HYP — Soya &amp; Millets</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="PE — Peanut"><span>PE — Peanut</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="SF — Seafood"><span>SF — Seafood</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="EGG — Egg"><span>EGG — Egg</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="TNT — Tree Nuts"><span>TNT — Tree Nuts</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="SOY — Soya"><span>SOY — Soya</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="WHE — Wheat"><span>WHE — Wheat</span></label>
+          <label class="option-item"><input type="checkbox" name="allergies" value="OT — Any Other"><span>OT — Any Other</span></label>
+        </div>
+        <div class="field-error" id="err_allergies">Please select at least one option.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="otherAllergyDetails">Specify any other allergies — foods or medicines</label>
+        <textarea id="otherAllergyDetails" name="otherAllergyDetails" rows="3" placeholder="Describe any other food allergies, intolerances, or medicine reactions…"></textarea>
+      </div>
+      <div class="note-card">
+        <strong>Note — Blood Test Reports:</strong> If you have recent blood test results, please bring them to your consultation or share them with your nutritionist directly. Blood reports are not required to complete this form.
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 5B — FAMILY HISTORY ── -->
+  <section class="form-section" id="sec5b">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">5b</span>
+        <div>
+          <div class="section-title">Family History</div>
+          <div class="section-desc">Helps identify hereditary risk factors that may influence your nutrition plan</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Does anyone in your immediate family (parents / siblings) have a history of the following? <span class="req">*</span></label>
+        <div class="field-hint">Select all that apply — this helps us factor hereditary risk into your dietary recommendations</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Not Applicable / None"><span>Not Applicable / None</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Diabetes (Type 2)"><span>Diabetes (Type 2)</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="High Cholesterol / Dyslipidaemia"><span>High Cholesterol / Dyslipidaemia</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Hypertension (High Blood Pressure)"><span>Hypertension (High Blood Pressure)</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Heart Disease / Cardiovascular Disease"><span>Heart Disease / Cardiovascular Disease</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Obesity"><span>Obesity</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Thyroid Disorders"><span>Thyroid Disorders</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Cancer"><span>Cancer</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Osteoporosis"><span>Osteoporosis</span></label>
+          <label class="option-item"><input type="checkbox" name="familyHistory" value="Others"><span>Others</span></label>
+        </div>
+        <div class="field-error" id="err_familyHistory">Please select at least one option.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="familyHistoryDetails">Additional details about family history</label>
+        <div class="field-hint">e.g. Father has Type 2 Diabetes diagnosed at 50 / Mother has hypertension and high cholesterol…</div>
+        <textarea id="familyHistoryDetails" name="familyHistoryDetails" rows="3" placeholder="Additional family history details…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 6 — MEDICAL ── -->
+  <section class="form-section" id="sec6">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">06</span>
+        <div>
+          <div class="section-title">Medical Conditions</div>
+          <div class="section-desc">Helps us address deficiencies and flag anything clinically relevant</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Select whichever medical conditions are applicable <span class="req">*</span></label>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Anaemia"><span>Anaemia</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Arthritis"><span>Arthritis</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Asthma"><span>Asthma</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Cancer"><span>Cancer</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Diabetes"><span>Diabetes</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Gestational Diabetes"><span>Gestational Diabetes</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Hypertension"><span>Hypertension</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Hyperlipidaemia (deranged lipid profile)"><span>Hyperlipidaemia</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Hypothyroidism"><span>Hypothyroidism</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Irritable Bowel Syndrome"><span>Irritable Bowel Syndrome</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Pre Diabetes"><span>Pre Diabetes</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Poly Cystic Ovarian Syndrome"><span>Poly Cystic Ovarian Syndrome</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Sinusitis"><span>Sinusitis</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Sleep Apnea"><span>Sleep Apnea</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Family History"><span>Family History</span></label>
+          <label class="option-item"><input type="checkbox" name="medicalConditions" value="Others"><span>Others</span></label>
+        </div>
+        <div class="field-error" id="err_medicalConditions">Please select at least one option.</div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="medicalConditionsOther">If others — please describe the condition</label>
+        <textarea id="medicalConditionsOther" name="medicalConditionsOther" rows="3" placeholder="Describe any other medical conditions, recent surgeries or health concerns…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 6B — INJURIES ── -->
+  <section class="form-section" id="sec6b">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">6b</span>
+        <div>
+          <div class="section-title">Injuries</div>
+          <div class="section-desc">Nutrition plays a major role in recovery — we'll factor this in. Skip if not applicable.</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label">Current or recent injuries — select all that apply</label>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="injuries" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="ACL Tear"><span>ACL Tear</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Ankle Sprain"><span>Ankle Sprain</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Groin Pull"><span>Groin Pull</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Fracture"><span>Fracture</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Hamstring Strain / Tear"><span>Hamstring Strain / Tear</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Ligament Tear"><span>Ligament Tear</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Low Back Pain"><span>Low Back Pain</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Pulled Muscle"><span>Pulled Muscle</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Runners Knee"><span>Runners Knee</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Shin Splints"><span>Shin Splints</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Tennis Elbow"><span>Tennis Elbow</span></label>
+          <label class="option-item"><input type="checkbox" name="injuries" value="Others"><span>Others</span></label>
+        </div>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="injuryNotes">Injury Notes</label>
+        <div class="field-hint">Details about injury — when it happened, treatment, current status…</div>
+        <textarea id="injuryNotes" name="injuryNotes" rows="3" placeholder="Describe injury details, treatment, and current status…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 7 — SYMPTOMS ── -->
+  <section class="form-section" id="sec7">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">07</span>
+        <div>
+          <div class="section-title">Symptoms</div>
+          <div class="section-desc">Often linked to nutritional gaps — helps us target the right areas</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="symptom-category">
+        <div class="symptom-cat-label">General Symptoms</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Cold hands and feet"><span>Cold hands and feet</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Craving for salty foods"><span>Craving for salty foods</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Disturbed Sleep / Insomnia"><span>Disturbed Sleep / Insomnia</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Headaches"><span>Headaches</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Loss of Appetite / Hunger"><span>Loss of Appetite / Hunger</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Low Energy Levels"><span>Low Energy Levels</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Low Immunity / Frequent infections"><span>Low Immunity / Frequent infections</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Migraines"><span>Migraines</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Sinusitis"><span>Sinusitis</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGeneral" value="Sweet Cravings"><span>Sweet Cravings</span></label>
+        </div>
+      </div>
+      <div class="symptom-category">
+        <div class="symptom-cat-label">Skin &amp; Hair Symptoms</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="symptomsSkinHair" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsSkinHair" value="Acne"><span>Acne</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsSkinHair" value="Dry Skin"><span>Dry Skin</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsSkinHair" value="Dry / Brittle and/or Flaky Hair"><span>Dry / Brittle and/or Flaky Hair</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsSkinHair" value="Hair Thinning or Falling Out"><span>Hair Thinning or Falling Out</span></label>
+        </div>
+      </div>
+      <div class="symptom-category">
+        <div class="symptom-cat-label">Cardiopulmonary Symptoms</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Chest pain"><span>Chest pain</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Fluid Retention (e.g. Swollen Ankles, Legs)"><span>Fluid Retention</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Low Blood Pressure"><span>Low Blood Pressure</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Muscle Cramps (e.g. Feet, Calves)"><span>Muscle Cramps</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Palpitations"><span>Palpitations</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Shortness of Breath"><span>Shortness of Breath</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsCardio" value="Wheezing"><span>Wheezing</span></label>
+        </div>
+      </div>
+      <div class="symptom-category">
+        <div class="symptom-cat-label">Gastrointestinal Symptoms</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="symptomsGI" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGI" value="Acidity"><span>Acidity</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGI" value="Belching"><span>Belching</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGI" value="Bloating"><span>Bloating</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGI" value="Constipation"><span>Constipation</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsGI" value="Flatulence"><span>Flatulence</span></label>
+        </div>
+      </div>
+      <div class="symptom-category">
+        <div class="symptom-cat-label">Neurological Symptoms</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="symptomsNeuro" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsNeuro" value="Light Headedness / Dizziness"><span>Light Headedness / Dizziness</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsNeuro" value="Memory loss or Concentrating Problems"><span>Memory loss / Concentrating Problems</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsNeuro" value="Tingling or Numbness"><span>Tingling or Numbness</span></label>
+        </div>
+      </div>
+      <div class="symptom-category">
+        <div class="symptom-cat-label">Mind &amp; Emotions</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="symptomsMind" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsMind" value="Anxiety / Excessive Worrying"><span>Anxiety / Excessive Worrying</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsMind" value="Depression"><span>Depression</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsMind" value="Excessive Stress"><span>Excessive Stress</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsMind" value="Moodiness / Irritability"><span>Moodiness / Irritability</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsMind" value="Restlessness, Inability to Relax"><span>Restlessness, Inability to Relax</span></label>
+        </div>
+      </div>
+      <div class="symptom-category">
+        <div class="symptom-cat-label">Reproductive Symptoms — Females Only</div>
+        <div class="cb-grid">
+          <label class="option-item"><input type="checkbox" name="symptomsReproductive" value="Not Applicable"><span>Not Applicable</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsReproductive" value="Dysmenorrhoea (Painful periods)"><span>Dysmenorrhoea (Painful periods)</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsReproductive" value="Frequent Urinary Tract Infections"><span>Frequent Urinary Tract Infections</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsReproductive" value="Irregular Periods"><span>Irregular Periods</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsReproductive" value="Menopause"><span>Menopause</span></label>
+          <label class="option-item"><input type="checkbox" name="symptomsReproductive" value="Hot Flashes"><span>Hot Flashes</span></label>
+        </div>
+      </div>
+      <div class="field-group" style="margin-top:8px;">
+        <label class="field-label" for="symptomsOther">Any other symptoms not listed above</label>
+        <textarea id="symptomsOther" name="symptomsOther" rows="3" placeholder="Describe any other symptoms or health concerns…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- ── SECTION 8 — MEDICATIONS ── -->
+  <section class="form-section" id="sec8">
+    <div class="section-header" onclick="toggleSection(this)">
+      <div class="section-header-left">
+        <span class="section-num-tag">08</span>
+        <div>
+          <div class="section-title">Medication &amp; Supplements</div>
+          <div class="section-desc">Some medications and supplements interact with diet — important for your safety</div>
+        </div>
+      </div>
+      <svg class="chevron" width="18" height="18" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+    <div class="section-body">
+      <div class="field-group">
+        <label class="field-label" for="currentMedications">Medications you currently take</label>
+        <div class="field-hint">Include name, dosage and time taken. Write "None" if not applicable. e.g. Thyronorm 50mcg — once daily morning on empty stomach</div>
+        <textarea id="currentMedications" name="currentMedications" rows="4" placeholder="Medication name, dosage, and timing…"></textarea>
+      </div>
+      <div class="field-group">
+        <label class="field-label" for="currentSupplements">Supplements you currently use</label>
+        <div class="field-hint">Include name, dosage and time taken. Write "None" if not applicable. e.g. Whey protein 1 scoop post workout · Creatine 5g daily · Omega-3 — 2 capsules with dinner</div>
+        <textarea id="currentSupplements" name="currentSupplements" rows="4" placeholder="Supplement name, dosage, and timing…"></textarea>
+      </div>
+    </div>
+  </section>
+
+  <!-- SUBMIT -->
+  <div class="submit-area">
+    <button type="submit" class="submit-btn" id="submitBtn">
+      <span class="btn-text">Submit Assessment</span>
+      <span class="spinner" id="loadingSpinner"></span>
+    </button>
+    <p class="submit-sub">Your information is confidential and used solely to create your personalised nutrition plan.</p>
+  </div>
+
+</form>
+
+<footer class="site-footer">
+  <strong style="color:var(--ink-soft)">NutriMyDiet</strong> — Client Assessment<br>
+  Your information is handled with complete confidentiality. &nbsp;·&nbsp; <a href="#">Privacy Policy</a> &nbsp;·&nbsp; <a href="#">Terms of Use</a>
+</footer>
+
+</div><!-- /form-wrap -->
+</div><!-- /page-outer -->
+
+<script>
+// ── SECTION TOGGLE ─────────────────────────────────
+function toggleSection(header) {
+  const body = header.nextElementSibling;
+  const isOpen = header.classList.contains('open');
+  header.classList.toggle('open', !isOpen);
+  body.classList.toggle('open', !isOpen);
+}
+
+// ── PROGRESS BAR ───────────────────────────────────
+window.addEventListener('scroll', () => {
+  const docH = document.documentElement.scrollHeight - window.innerHeight;
+  const pct = docH > 0 ? (window.scrollY / docH) * 100 : 0;
+  document.getElementById('progress-bar').style.width = pct + '%';
+});
+
+// ── NAV SCROLL ─────────────────────────────────────
+document.querySelectorAll('.nav-step').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const sec = document.getElementById(btn.dataset.target);
+    if (sec) {
+      sec.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      const header = sec.querySelector('.section-header');
+      const body = sec.querySelector('.section-body');
+      if (!header.classList.contains('open')) {
+        header.classList.add('open');
+        body.classList.add('open');
+      }
+    }
+  });
+});
+
+// Active nav step on scroll
+const sectionIds = ['sec1','sec2','sec3','sec4','sec5','sec5b','sec6','sec6b','sec7','sec8'];
+const navSteps = document.querySelectorAll('.nav-step');
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      const id = entry.target.id;
+      navSteps.forEach(s => s.classList.remove('active'));
+      const active = document.querySelector(`.nav-step[data-target="${id}"]`);
+      if (active) active.classList.add('active');
+    }
+  });
+}, { threshold: 0.3 });
+sectionIds.forEach(id => {
+  const el = document.getElementById(id);
+  if (el) observer.observe(el);
+});
+
+// ── VALIDATION HELPERS ─────────────────────────────
+function showErr(id, show) {
+  const el = document.getElementById('err_' + id);
+  if (el) el.classList.toggle('show', show);
+}
+function markInvalid(el, invalid) {
+  if (!el) return;
+  el.classList.toggle('invalid', invalid);
+}
+function getChecked(name) {
+  return Array.from(document.querySelectorAll(`input[name="${name}"]:checked`)).map(c => c.value);
+}
+function getRadio(name) {
+  const el = document.querySelector(`input[name="${name}"]:checked`);
+  return el ? el.value : '';
+}
+
+// ── SUBMIT HANDLER ─────────────────────────────────
+document.getElementById('nutritionForm').addEventListener('submit', async function(e) {
+  e.preventDefault();
+
+  const get = id => (document.getElementById(id) || {}).value || '';
+
+  let valid = true;
+  const textRequired = [
+    ['fullName','fullName'],['dateOfBirth','dateOfBirth'],['contactNumber','contactNumber'],
+    ['email','email'],['weight','weight'],['height','height'],['residentialAddress','residentialAddress'],
+    ['goals','goals'],['foodsDislike','foodsDislike'],['alcoholConsumption','alcoholConsumption'],
+    ['smokingDrugs','smokingDrugs'],['nonVegDaysAvoided','nonVegDaysAvoided'],
+  ];
+
+  textRequired.forEach(([id, errKey]) => {
+    const isEmpty = !get(id).trim();
+    showErr(errKey, isEmpty);
+    markInvalid(document.getElementById(id), isEmpty);
+    if (isEmpty) valid = false;
+  });
+
+  const emailVal = get('email').trim();
+  if (emailVal && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(emailVal)) {
+    showErr('email', true);
+    markInvalid(document.getElementById('email'), true);
+    valid = false;
+  }
+
+  const trainsVal = getRadio('currentlyTrains');
+  showErr('currentlyTrains', !trainsVal);
+  if (!trainsVal) valid = false;
+
+  const foodPrefVal = getRadio('foodPreference');
+  showErr('foodPreference', !foodPrefVal);
+  if (!foodPrefVal) valid = false;
+
+  const waterVal = getRadio('waterIntake');
+  showErr('waterIntake', !waterVal);
+  if (!waterVal) valid = false;
+
+  ['allergies','familyHistory','medicalConditions'].forEach(name => {
+    const checked = getChecked(name);
+    showErr(name, checked.length === 0);
+    if (checked.length === 0) valid = false;
+  });
+
+  if (!valid) {
+    const firstErr = document.querySelector('.invalid, .field-error.show');
+    if (firstErr) firstErr.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    return;
+  }
+
+  const data = {
+    user_id: localStorage.getItem("user_id"),
+  full_name: localStorage.getItem("full_name"),
+  email: localStorage.getItem("email"),
+  mobile_number: localStorage.getItem("mobile_number"),
+    personalInfo: {
+      fullName: get('fullName'), dateOfBirth: get('dateOfBirth'),
+      contactNumber: get('contactNumber'), email: get('email'),
+      nationality: get('nationality'), occupation: get('occupation'),
+      bloodGroup: get('bloodGroup'), weight: get('weight'), height: get('height'),
+      residentialAddress: get('residentialAddress'), workSchoolTimings: get('workSchoolTimings'),
+      goals: get('goals'), additionalInfo: get('additionalInfo'),
+    },
+    training: {
+      currentlyTrains: trainsVal, sportType: getChecked('sportType'),
+      trainingScheduleSport: get('trainingScheduleSport'),
+      fitnessType: getChecked('fitnessType'),
+      trainingScheduleFitness: get('trainingScheduleFitness'),
+      trainingNotes: get('trainingNotes'),
+    },
+    nutrition: {
+      foodPreference: foodPrefVal, waterIntake: waterVal,
+      foodsDislike: get('foodsDislike'), foodsEnjoy: get('foodsEnjoy'),
+      cookingOil: get('cookingOil'), eatOutFrequency: get('eatOutFrequency'),
+      alcoholConsumption: get('alcoholConsumption'), smokingDrugs: get('smokingDrugs'),
+      nonVegDaysAvoided: get('nonVegDaysAvoided'),
+    },
+    dietaryRecall: {
+      earlyMorning: get('mealEarlyMorning'), breakfast: get('mealBreakfast'),
+      midMorningSnack: get('mealMidMorning'), lunch: get('mealLunch'),
+      eveningSnack: get('mealEveningSnack'), dinner: get('mealDinner'),
+      postDinner: get('mealPostDinner'), preWorkout: get('mealPreWorkout'),
+      duringWorkout: get('mealDuringWorkout'), postWorkout: get('mealPostWorkout'),
+      beverageOther: get('mealBeverage'),
+    },
+    allergies: { selected: getChecked('allergies'), otherDetails: get('otherAllergyDetails') },
+    familyHistory: { selected: getChecked('familyHistory'), details: get('familyHistoryDetails') },
+    medicalConditions: { selected: getChecked('medicalConditions'), otherDetails: get('medicalConditionsOther') },
+    injuries: { selected: getChecked('injuries'), notes: get('injuryNotes') },
+    symptoms: {
+      general: getChecked('symptomsGeneral'), skinHair: getChecked('symptomsSkinHair'),
+      cardiopulmonary: getChecked('symptomsCardio'), gastrointestinal: getChecked('symptomsGI'),
+      neurological: getChecked('symptomsNeuro'), mindEmotions: getChecked('symptomsMind'),
+      reproductive: getChecked('symptomsReproductive'), other: get('symptomsOther'),
+    },
+    medications: { currentMedications: get('currentMedications'), currentSupplements: get('currentSupplements') },
+    submittedAt: new Date().toISOString(),
+  };
+
+  console.log('Your Nutritionist — Submitted JSON:', JSON.stringify(data, null, 2));
+console.log(data);
+  const btn = document.getElementById('submitBtn');
+  const spinner = document.getElementById('loadingSpinner');
+  const btnText = btn.querySelector('.btn-text');
+  btn.disabled = true;
+  spinner.style.display = 'inline-block';
+  btnText.textContent = 'Sending…';
+
+  document.getElementById('successMsg').classList.remove('show');
+  document.getElementById('errorMsg').classList.remove('show');
+
+  try {
+    const response = await fetch('http://localhost:5678/webhook-test/nutrition-form', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(data),
+    });
+    if (!response.ok) throw new Error('HTTP ' + response.status);
+    document.getElementById('successMsg').classList.add('show');
+    document.getElementById('successMsg').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    document.getElementById('nutritionForm').reset();
+  } catch (err) {
+    console.error('Submission error:', err);
+    document.getElementById('errorMsg').classList.add('show');
+    document.getElementById('errorMsg').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  } finally {
+    btn.disabled = false;
+    spinner.style.display = 'none';
+    btnText.textContent = 'Submit Assessment';
+  }
+});
+
+// Clear invalid state on input
+document.querySelectorAll('input, textarea, select').forEach(el => {
+  el.addEventListener('input', () => {
+    el.classList.remove('invalid');
+    const errEl = document.getElementById('err_' + el.id);
+    if (errEl) errEl.classList.remove('show');
+  });
+  el.addEventListener('change', () => {
+    el.classList.remove('invalid');
+    const errEl = document.getElementById('err_' + el.id);
+    if (errEl) errEl.classList.remove('show');
+  });
+});
+</script>
+</body>
+</html>

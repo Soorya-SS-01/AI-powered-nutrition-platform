@@ -1,0 +1,151 @@
+﻿Sequence,Food,Quantity,Portion,Output,UOM,Calories,Carbohydrate,Protein,Fat,Fibre,Calcium,Potassium,Sodium,Iron,Type,Breakfast,Lunch,Dinner,Morning Snack,Tea Time Snack,Evening Snack,Bed Time,Pre Training,Pre Workout,During Training,During Workout,Post Training,Post Workout,On Waking up,Beverage,GL,LACT,MLK,HYP,PE,SF,TNT,WHE,SOY,EGG,Vegan,Vegetarian,Eggetarian,Piscetarian,Non Vegetarian,IsActive,Food Source,id
+1,VPA Australia  - Protein Water ,1 Scoop,1,1,Scoop,82,1,20,0.1,0,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,1,,,,1,https://tinyurl.com/39xxb85w,1
+2,MB Whey Isolate 90% (unflavoured),1 scoop,1,1,scoop,113,0.36,27,0.36,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,1,,,,1,https://tinyurl.com/4fr48et4,2
+3,Genetix Whey Protein ,1 Scoop,1,1,Scoop,154,2.1,32.1,0.6,3.2,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,1,,,,1,https://tinyurl.com/yc5x9t6w,3
+4,Whole Truth Light cocoa 24g,1 scoop ,1,1,scoop,138.8,6.4,24.9,1.5,,,,,,,1,1,1,1,1,1,1,1,1,1,1,,,,1,,,,,,,,,,,,1,,,,1,,4
+5,Cottage cheese,100g,1,100,g,80,4.2,12.9,2.5,0,,,,,,1,1,1,,,,,,,,,,,,,,1,,,,,,,,,,1,,,,1,Healthifyme,5
+6,Tofu Cubes,2 cubes,1,2,cubes,44,0.8,6,2.8,0.8,111,,,,,1,1,1,1,1,1,,,,,,1,1,,,,,,,,,,,1,,,1,,,,1,Healthifyme,6
+7,Greek Yogurt (Chobani - Non Fat Plain),100gm,1,100,gm,40,6,6,0,0,,,,,,1,1,1,,,1,,1,1,,,,,,,,,,,,,,,,,,1,,,,1,walmart site,7
+8,Herman Brot High Protein Low Carb Wraps,1g,1,1,wrap,158,10.7,16,3.9,5.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,,,,1,http://tinyurl.com/2vx74nyx,8
+9,Edamame Salad,100g,1,100,g,79,8.9,6.2,2.5,4.1,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,1,,,,1,healthifyme,9
+10,Butter Beans (Boiled),100g,1,100,g,115,21,8,0,7,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,,,,1,Healthifyme,10
+11,Soyabean curry,100,1,100,g,91,5,6.6,5,3.9,,,,,,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,,,,1,healthifyme ,11
+12,Carrot and cabbage salad ,100,1,100,g,40,8.4,1.2,0.2,3.8,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,,,,1,healthifyme ,12
+13,Soya Chunks Subzi,100,1,100,g,101,10.1,7.1,4,3.3,68.4,,,,,,1,1,,,,,,,,,1,1,,,,,,,,,,,1,,,1,,,,1,Healthifyme,13
+14,Teriyaki tofu,100 gm,1,100,gm,158,5.5,14,9,2,,,,,,1,1,1,1,1,1,,,,,,1,1,,,,,,,,,,,1,,,1,,,,1,Heallthifyme,14
+15,Masoor dal Curry,100 gm,1,100,gm,85,13,5.3,1.3,3.8,,,,,,1,1,1,,,,,,,,,1,1,,,,,,,,,,,,,,1,,,,1,Healthifyme,15
+16,Vegetable Mushroom stir fry,100,1,100,g,65,5.8,4,4,2.3,31.8,,,,,,1,1,,,1,,,,,,,,,,,,,,,,,,,,,1,,,,1,,16
+17,Frozen Mixed Vegetables,100g,1,100,g,71,11.8,3.3,0.3,4.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,,,,1,Healthifyme ,17
+18,Magic Spoon Cereal ,38g ,1,38,g,150,15,13,8,1,,,,,,1,,,,,1,,,,,,,,,,,1,1,,,,,1,,,,1,,,,1,https://tinyurl.com/44nvcv3p,18
+19,Soy Milk (Bonsoy),100ml,1,100,ml,58,5.5,4.1,2.2,1.4,,,,,,1,,,1,1,1,,,,,,,,,1,,,,1,,,,,1,,,1,,,,1,https://tinyurl.com/3r932hev,19
+20,Baked cheese popper,1 Piece,1,1,Piece,54,1,4.8,3.4,0,,,,,,,1,1,,,,,,,,,,,,,,1,,,,,,,,,,1,,,,1,Healthifyme,20
+21,Greek Yogurt (Chobani - Whole Milk Plain),100g,1,100,g,100,4.11,8.8,5.29,,,,,,,1,1,1,1,,1,,,,,,1,1,,,,1,1,,,,,1,,,,1,,,,1,https://tinyurl.com/57c6jnmy,21
+22,Pasta salad with pan fried tofu ,1,1,100,g,95,4.8,6.8,5.9,1.7,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,1,1,,,1,,,,1,From Software,22
+23,Moong and Vegetable Soup,100ml,1,100,ml,51,8.2,2.7,0.8,2.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,,,,1,Healthifyme,23
+24,Low Fat Plain Greek Yogurt (Nada) ,1 pack,1,1,pack,252,18,21.6,7.2,0,,,,,,1,1,1,1,,1,,,,,,1,1,,,,1,1,,,,,1,,,,1,,,,1,https://tinyurl.com/ym68p4ha,24
+25,Corn onion beetroot salad,100g,1,100,g,41,9,1.2,0.1,2.8,,,,,,1,1,1,1,1,1,1,1,1,1,,1,1,1,,,,,,,,,,,,,1,,,,1,Healthifyme,25
+26,Chana curry,1,1,100,g,86,11.7,3.1,3.1,5,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,1,,,,1,Kadala curry from software,26
+27,Waffle (medium),1,1,1,no,75,24.7,5.9,10.6,0,,,,,,1,,,1,,1,,,,,,,,,,,,,,,,,,,,,1,,,,1,Healthifyme,27
+28,Alpino High Protein Super Oats (Chocolate),100g,1,100,g,451.2,56.1,21,16.3,17.1,,,,,,1,,,1,,1,,1,1,,,,,,,,,,1,1,,,,,,,1,,,,1,https://tinyurl.com/3fezxwjz,28
+29,Gritzo Supermilk Powder (4-7y) ,2 Scoops,1,2,Scoops,121.85,24.86,6,0.49,3,,,,,,1,,,,,,,,,,,1,1,,1,,1,1,,,,,1,,,,1,,,,1,https://tinyurl.com/2s49mjmh,29
+30,Rajma tikki ,1 tikki ,1,1,tikki,110,12,3.2,5.5,3.3,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,1,,,,1,,30
+31,VPA Australia  - Protein Water ,1 Scoop,1,1,Scoop,82,1,20,0.1,0,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,,,,1,1,https://tinyurl.com/39xxb85w,31
+32,MB Whey Isolate 90% (unflavoured),1 scoop,1,1,scoop,113,0.36,27,0.36,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,,1,1,https://tinyurl.com/4fr48et4,32
+33,Genetix Whey Protein ,1 Scoop,1,1,Scoop,154,2.1,32.1,0.6,3.2,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,,,,1,1,https://tinyurl.com/yc5x9t6w,33
+34,Whole Truth Light cocoa 24g,1 scoop ,1,1,scoop,138.8,6.4,24.9,1.5,,,,,,,1,1,1,1,1,1,1,1,1,1,1,,,,1,,,,,,,,,,,,,,,1,1,,34
+35,Grilled fish fillet,100,1,100,g,100,1.2,17.2,3.1,0.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,healthifyme ,35
+36,Shredded chicken,100g,1,100,g,165,0.5,28.5,5.9,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,,1,1,From software,36
+37,Tuna Fish,100gm,1,100,g,144,0,23.3,4.9,0,,,,,,1,1,1,,,1,,,,,,1,1,,,,,,,,,,,,,,,,,1,1,Healthifyme,37
+38,Cottage cheese,100g,1,100,g,80,4.2,12.9,2.5,0,,,,,,1,1,1,,,,,,,,,,,,,,1,,,,,,,,,,,,,1,1,Healthifyme,38
+39,Tofu Cubes,2 cubes,1,2,cubes,44,0.8,6,2.8,0.8,111,,,,,1,1,1,1,1,1,,,,,,1,1,,,,,,,,,,,1,,,,,,1,1,Healthifyme,39
+40,Air Fried Chicken 65,100g,1,100,g,124,5.8,18.7,2.3,0.6,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,Healthifyme ,40
+41,Basa Fish Fillet,100 g,1,100,g,104,0.7,15.9,3.8,0.1,,,,,,1,1,1,1,,,,1,1,,,1,1,,,,,,,,1,,,,,,,,,1,1,Healthifyme,41
+42,Sauteed chicken,100g,1,100,g,138,1,20.1,5.5,0.1,,,,,,,1,1,,,,,,,,,1,1,,,,,,,,,,,,,,,,,1,1,Healthifyme,42
+43,Avarekaalu Saru ,100,1,100,g,69,5.5,2,4.4,9.5,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,Healthifyme ,43
+44,Grilled chicken breast with sautéed vegetables (The salad studio),1,1,1,serving ,437,17.4,55.3,17,5.4,,,,,,,1,1,,,1,,,,,,,,,,,,,,,,,,,,,,,,1,1,healthifyme ,44
+45,Chicken teriyaki salad (Subway),255g,1,1,portion,136,11.5,16.1,2.4,3,,,,,,1,1,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,1,Healthifyme,45
+46,Pork Roast,100gm,1,100,gm,96,2.1,11.6,4.7,1,,,,,,,1,1,,,,,,,,,1,1,,,,,,,,,,,,,,,,,1,1,Healthifyme,46
+47,Chicken spinach kebab,100,1,100,g,143,1.3,18.1,6.8,0.4,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,healthifyme ,47
+48,Herman Brot High Protein Low Carb Wraps,1g,1,1,wrap,158,10.7,16,3.9,5.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,,1,1,http://tinyurl.com/2vx74nyx,48
+49,Edamame Salad,100g,1,100,g,79,8.9,6.2,2.5,4.1,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,,1,1,healthifyme,49
+50,Roasted chicken salad (Salad days),275g,1,1,portion,234,7.9,25.7,10.8,2.6,,,,,,1,1,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,1,Healthifyme,50
+51,Tofu scramble,100g,1,100,g,117,5.2,11.6,6.6,2.5,,,,,,1,1,1,,,,,,,,,1,1,,,,,,1,,,,,1,,,,,,1,1,Healthifyme,51
+52,Soy Egg (2 Whites + 1 yolk),1,1,1,portion,84,0,9.6,5,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,1,1,,,,,1,1,From software,52
+53,Chicken Taco ,1 Taco,1,1,Taco,173,16.8,17.4,4.1,1.4,,,,,,1,1,1,,,,,,,,,,,,,1,,,,,,,,,,,,,,1,1,Healthifyme,53
+54,Chicken Kurma,100g,1,100,g,111,3.2,10.8,5.9,0.8,,,,,,1,1,1,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,1,1,Healthifyme ,54
+55,Egg dropped chicken soup (O4H),100,1,100,ml,68,5.7,6.1,2.4,1,,,,,,,1,1,,,1,,,,,,,,,,,,,,,,,,,,,,,,1,1,Healthifyme ,55
+56,Masoor dal Curry,100 gm,1,100,gm,85,13,5.3,1.3,3.8,,,,,,1,1,1,,,,,,,,,1,1,,,,,,,,,,,,,,,,,1,1,Healthifyme,56
+57,Pro salad- Grilled barbeque chicken (California Burrito),250g,1,1,Bowl,390,29,30,18,10,,,,,,1,1,1,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,1,1,Healthifyme,57
+58,Soy Milk (Bonsoy),100ml,1,100,ml,58,5.5,4.1,2.2,1.4,,,,,,1,,,1,1,1,,,,,,,,,1,,,,1,,,,,1,,,,,,1,1,https://tinyurl.com/3r932hev,58
+59,Chana curry,1,1,100,g,86,11.7,3.1,3.1,5,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,,1,1,Kadala curry from software,59
+60,Caprese salad,100g,1,100,g,228,2.6,15.4,17.3,0.6,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,,1,1,healthifyme,60
+61,Optimum Nutrition Gold Standard 100% Isolate (Chocolate bliss),1 Scoop,1,1,Scoop,112,1,25,0.5,0,,,,,,1,1,1,,,,,,,,,1,1,,,,1,1,1,,,,1,1,,1,,,,,1,http://tinyurl.com/4fzby45d,61
+62,Protyze Anytime Clear Whey Protein Isolate,24g,1,1,Scoop,110,1,24,0,0,,,,,,,,,,,,,,,,,1,1,,,,,,,,,,,,,1,,,,,1,https://rb.gy/xkvplz,62
+63,Joy layer vegan protein powder,3,1,3,scoops ,130,4.4,26,0.94,1.2,,,,,,1,,,1,,1,,1,1,1,,1,1,,,,,,,,,,,,,1,,,,,1,http://tinyurl.com/3w9pr97t,63
+64,Whole Truth Light cocoa 24g,1 scoop ,1,1,scoop,138.8,6.4,24.9,1.5,,,,,,,1,1,1,1,1,1,1,1,1,1,1,,,,1,,,,,,,,,,,1,,,,,1,,64
+65,Tofu Cubes,2 cubes,1,2,cubes,44,0.8,6,2.8,0.8,111,,,,,1,1,1,1,1,1,,,,,,1,1,,,,,,,,,,,1,,1,,,,,1,Healthifyme,65
+66,Greek Yogurt (Chobani - Non Fat Plain),100gm,1,100,gm,40,6,6,0,0,,,,,,1,1,1,,,1,,1,1,,,,,,,,,,,,,,,,,1,,,,,1,walmart site,66
+67,Herman Brot High Protein Low Carb Wraps,1g,1,1,wrap,158,10.7,16,3.9,5.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,http://tinyurl.com/2vx74nyx,67
+68,Edamame Salad,100g,1,100,g,79,8.9,6.2,2.5,4.1,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,1,,,,,1,healthifyme,68
+69,Butter Beans (Boiled),100g,1,100,g,115,21,8,0,7,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,Healthifyme,69
+70,Soyabean curry,100,1,100,g,91,5,6.6,5,3.9,,,,,,1,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,healthifyme ,70
+71,Carrot and cabbage salad ,100,1,100,g,40,8.4,1.2,0.2,3.8,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,healthifyme ,71
+72,Roasted Edamame (Unsalted),100g,1,100,g,420,34,36,15,9,,,,,,,,,1,,1,,,,,,,,,,,,,,,,,,1,,1,,,,,1,healthifyme ,72
+73,Soya Chunks Subzi,100,1,100,g,101,10.1,7.1,4,3.3,68.4,,,,,,1,1,,,,,,,,,1,1,,,,,,,,,,,1,,1,,,,,1,Healthifyme,73
+74,Green peas soup,100,1,100,ml,66,7.9,3.3,2.4,4,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,healthifyme ,74
+75,Masoor dal Curry,100 gm,1,100,gm,85,13,5.3,1.3,3.8,,,,,,1,1,1,,,,,,,,,1,1,,,,,,,,,,,,,1,,,,,1,Healthifyme,75
+76,Vegetable Mushroom stir fry,100,1,100,g,65,5.8,4,4,2.3,31.8,,,,,,1,1,,,1,,,,,,,,,,,,,,,,,,,,1,,,,,1,,76
+77,Frozen Mixed Vegetables,100g,1,100,g,71,11.8,3.3,0.3,4.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,Healthifyme ,77
+78,Soy Milk (Bonsoy),100ml,1,100,ml,58,5.5,4.1,2.2,1.4,,,,,,1,,,1,1,1,,,,,,,,,1,,,,1,,,,,1,,1,,,,,1,https://tinyurl.com/3r932hev,78
+79,Pasta salad with pan fried tofu ,1,1,100,g,95,4.8,6.8,5.9,1.7,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,1,1,,1,,,,,1,From Software,79
+80,Moong and Vegetable Soup,100ml,1,100,ml,51,8.2,2.7,0.8,2.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,Healthifyme,80
+81,Sprouts with Pomegranate,100g,1,100,g,53,11.6,2.3,0.6,2.7,,,,,,,1,1,1,,1,,,,,,,,,,,,,,,,,,,,1,,,,,1,Healthifyme,81
+82,Corn onion beetroot salad,100g,1,100,g,41,9,1.2,0.1,2.8,,,,,,1,1,1,1,1,1,1,1,1,1,,1,1,1,,,,,,,,,,,,1,,,,,1,Healthifyme,82
+83,Chana curry,1,1,100,g,86,11.7,3.1,3.1,5,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,1,,,,,1,Kadala curry from software,83
+84,Air Fried Chana Tikki,1 tikki,1,1,tikki,77,15,3,0.7,4,,,,,,1,1,1,,,1,,1,1,,,,,,,,,,,,,,,,,1,,,,,1,Healthifyme,84
+85,Air fried Falafel,1 Falafel,1,1,falafel,58,8.7,2.7,1.6,2.4,,,,,,1,1,1,,,1,,1,1,,,,,,,,,,,,,,,,,1,,,,,1,Healthifyme,85
+86,Alpino High Protein Super Oats (Chocolate),100g,1,100,g,451.2,56.1,21,16.3,17.1,,,,,,1,,,1,,1,,1,1,,,,,,,,,,1,1,,,,,,1,,,,,1,https://tinyurl.com/3fezxwjz,86
+87,Alsande curry ,100,1,100,g,76,10.7,4.4,1.8,1.6,,,,,,1,1,1,,,,,,,,,,,,,,,,,,,,,,,1,,,,,1,From software ,87
+88,Shepu dal (Dal with Dill leaves),100g,1,100,g,76,10,3.8,2.4,2,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,1,,,,,1,software ,88
+89,Moong dal chilla with stuffed vegetables,1,1,1,no,160,21.4,8.55,4.7,,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,1,,,,,1,From Software,89
+90,Oats puttu ,100g,1,100,g,159,18.5,4.2,7.6,4.8,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,1,,,,,1,Healthifyme,90
+91,VPA Australia  - Protein Water ,1 Scoop,1,1,Scoop,82,1,20,0.1,0,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,,1,,,1,https://tinyurl.com/39xxb85w,91
+92,MB Whey Isolate 90% (unflavoured),1 scoop,1,1,scoop,113,0.36,27,0.36,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,1,,,1,https://tinyurl.com/4fr48et4,92
+93,Genetix Whey Protein ,1 Scoop,1,1,Scoop,154,2.1,32.1,0.6,3.2,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,,1,,,1,https://tinyurl.com/yc5x9t6w,93
+94,Whole Truth Light cocoa 24g,1 scoop ,1,1,scoop,138.8,6.4,24.9,1.5,,,,,,,1,1,1,1,1,1,1,1,1,1,1,,,,1,,,,,,,,,,,,,1,,,1,,94
+95,Cottage cheese,100g,1,100,g,80,4.2,12.9,2.5,0,,,,,,1,1,1,,,,,,,,,,,,,,1,,,,,,,,,,,1,,,1,Healthifyme,95
+96,Tofu Cubes,2 cubes,1,2,cubes,44,0.8,6,2.8,0.8,111,,,,,1,1,1,1,1,1,,,,,,1,1,,,,,,,,,,,1,,,,1,,,1,Healthifyme,96
+97,Greek Yogurt (Chobani - Non Fat Plain),100gm,1,100,gm,40,6,6,0,0,,,,,,1,1,1,,,1,,1,1,,,,,,,,,,,,,,,,,,,1,,,1,walmart site,97
+98,Herman Brot High Protein Low Carb Wraps,1g,1,1,wrap,158,10.7,16,3.9,5.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,1,,,1,http://tinyurl.com/2vx74nyx,98
+99,Edamame Salad,100g,1,100,g,79,8.9,6.2,2.5,4.1,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,1,,,1,healthifyme,99
+100,Butter Beans (Boiled),100g,1,100,g,115,21,8,0,7,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,1,,,1,Healthifyme,100
+101,Soy Egg (2 Whites + 1 yolk),1,1,1,portion,84,0,9.6,5,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,1,1,,,1,,,1,From software,101
+102,Omlette (5 egg whites + 1 yolk),1 Portion,1,1,Portion,179,1.7,20.4,9.3,0,,,,,,1,1,1,,,,,,,,,1,1,,,,,,,,,,,,1,,,1,,,1,Healthifyme,102
+103,Soyabean curry,100,1,100,g,91,5,6.6,5,3.9,,,,,,1,1,1,,,,,,,,,,,,,,,,,,,,,,,,,1,,,1,healthifyme ,103
+104,Carrot and cabbage salad ,100,1,100,g,40,8.4,1.2,0.2,3.8,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,1,,,1,healthifyme ,104
+105,Roasted Edamame (Unsalted),100g,1,100,g,420,34,36,15,9,,,,,,,,,1,,1,,,,,,,,,,,,,,,,,,1,,,,1,,,1,healthifyme ,105
+106,Teriyaki tofu,100 gm,1,100,gm,158,5.5,14,9,2,,,,,,1,1,1,1,1,1,,,,,,1,1,,,,,,,,,,,1,,,,1,,,1,Heallthifyme,106
+107,Green peas soup,100,1,100,ml,66,7.9,3.3,2.4,4,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,1,,,1,healthifyme ,107
+108,Masoor dal Curry,100 gm,1,100,gm,85,13,5.3,1.3,3.8,,,,,,1,1,1,,,,,,,,,1,1,,,,,,,,,,,,,,,1,,,1,Healthifyme,108
+109,Vegetable Mushroom stir fry,100,1,100,g,65,5.8,4,4,2.3,31.8,,,,,,1,1,,,1,,,,,,,,,,,,,,,,,,,,,,1,,,1,,109
+110,Magic Spoon Cereal ,38g ,1,38,g,150,15,13,8,1,,,,,,1,,,,,1,,,,,,,,,,,1,1,,,,,1,,,,,1,,,1,https://tinyurl.com/44nvcv3p,110
+111,Baked vegetables,100g,1,100,g,49,9.5,2.2,0.7,2.8,,,,,,,1,1,,,1,,,,,,,,,,,,,,,,,,,,,,1,,,1,Healthifyme,111
+112,Masala omlete (3 whites + 1 yolk),1,1,1,omlete,155,2,13.6,9.3,0.4,,,,,,1,1,1,,,1,,,,,,1,1,,,,,,,,,,,,1,,,1,,,1,Healthifyme,112
+113,Poached egg (2 whites + 1 Yolk),1 portion,1,1,portion,157,2.3,13.4,10.6,0.7,,,,,,1,1,1,1,1,1,,,,,,,,,,,,,,,,,,,1,,,1,,,1,Healthifyme,113
+114,Baked cheese popper,1 Piece,1,1,Piece,54,1,4.8,3.4,0,,,,,,,1,1,,,,,,,,,,,,,,1,,,,,,,,,,,1,,,1,Healthifyme,114
+115,Greek Yogurt (Chobani - Whole Milk Plain),100g,1,100,g,100,4.11,8.8,5.29,,,,,,,1,1,1,1,,1,,,,,,1,1,,,,1,1,,,,,1,,,,,1,,,1,https://tinyurl.com/57c6jnmy,115
+116,Soy Egg,1,1,1,Whole,69,0,6,5,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,1,1,,,1,,,1,From software,116
+117,Low Fat Plain Greek Yogurt (Nada) ,1 pack,1,1,pack,252,18,21.6,7.2,0,,,,,,1,1,1,1,,1,,,,,,1,1,,,,1,1,,,,,1,,,,,1,,,1,https://tinyurl.com/ym68p4ha,117
+118,Sprouts with Pomegranate,100g,1,100,g,53,11.6,2.3,0.6,2.7,,,,,,,1,1,1,,1,,,,,,,,,,,,,,,,,,,,,,1,,,1,Healthifyme,118
+119,Chana curry,1,1,100,g,86,11.7,3.1,3.1,5,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,1,,,1,Kadala curry from software,119
+120,Caprese salad,100g,1,100,g,228,2.6,15.4,17.3,0.6,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,1,,,1,healthifyme,120
+121,VPA Australia  - Protein Water ,1 Scoop,1,1,Scoop,82,1,20,0.1,0,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,,,1,,1,https://tinyurl.com/39xxb85w,121
+122,MB Whey Isolate 90% (unflavoured),1 scoop,1,1,scoop,113,0.36,27,0.36,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,1,,1,https://tinyurl.com/4fr48et4,122
+123,Genetix Whey Protein ,1 Scoop,1,1,Scoop,154,2.1,32.1,0.6,3.2,,,,,,,,,,,,,,,,,1,1,,,,1,,,,,,1,,,,,,1,,1,https://tinyurl.com/yc5x9t6w,123
+124,Whole Truth Light cocoa 24g,1 scoop ,1,1,scoop,138.8,6.4,24.9,1.5,,,,,,,1,1,1,1,1,1,1,1,1,1,1,,,,1,,,,,,,,,,,,,,1,,1,,124
+125,Grilled Prawns,100 gm,1,100,gm,113,1.3,18.3,3.8,0.2,,,,,,,1,1,,,,,,,,,1,1,,,,,,,,1,,,,,,,,1,,1,Healthifyme,125
+126,Tuna Fish,100gm,1,100,g,144,0,23.3,4.9,0,,,,,,1,1,1,,,1,,,,,,1,1,,,,,,,,,,,,,,,,1,,1,Healthifyme,126
+127,Tofu Cubes,2 cubes,1,2,cubes,44,0.8,6,2.8,0.8,111,,,,,1,1,1,1,1,1,,,,,,1,1,,,,,,,,,,,1,,,,,1,,1,Healthifyme,127
+128,Basa Fish Fillet,100 g,1,100,g,104,0.7,15.9,3.8,0.1,,,,,,1,1,1,1,,,,1,1,,,1,1,,,,,,,,1,,,,,,,,1,,1,Healthifyme,128
+129,Greek Yogurt (Chobani - Non Fat Plain),100gm,1,100,gm,40,6,6,0,0,,,,,,1,1,1,,,1,,1,1,,,,,,,,,,,,,,,,,,,,1,,1,walmart site,129
+130,Avarekaalu Saru ,100,1,100,g,69,5.5,2,4.4,9.5,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,1,,1,Healthifyme ,130
+131,Herman Brot High Protein Low Carb Wraps,1g,1,1,wrap,158,10.7,16,3.9,5.1,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,1,,1,http://tinyurl.com/2vx74nyx,131
+132,Edamame Salad,100g,1,100,g,79,8.9,6.2,2.5,4.1,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,1,,1,healthifyme,132
+133,Butter Beans (Boiled),100g,1,100,g,115,21,8,0,7,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,1,,1,Healthifyme,133
+134,Tofu scramble,100g,1,100,g,117,5.2,11.6,6.6,2.5,,,,,,1,1,1,,,,,,,,,1,1,,,,,,1,,,,,1,,,,,1,,1,Healthifyme,134
+135,Soy Egg (2 Whites + 1 yolk),1,1,1,portion,84,0,9.6,5,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,1,1,,,,1,,1,From software,135
+136,Carrot and cabbage salad ,100,1,100,g,40,8.4,1.2,0.2,3.8,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,1,,1,healthifyme ,136
+137,Egg (4 whites + 1 yolk),155g,1,1,portion,162,1.5,16.8,9.3,0,,,,,,,,,,,1,,,,,,1,1,,,,,,,,,,,,1,,,,1,,1,healthifyme,137
+138,Roasted Edamame (Unsalted),100g,1,100,g,420,34,36,15,9,,,,,,,,,1,,1,,,,,,,,,,,,,,,,,,1,,,,,1,,1,healthifyme ,138
+139,Soya Chunks Subzi,100,1,100,g,101,10.1,7.1,4,3.3,68.4,,,,,,1,1,,,,,,,,,1,1,,,,,,,,,,,1,,,,,1,,1,Healthifyme,139
+140,Green peas soup,100,1,100,ml,66,7.9,3.3,2.4,4,,,,,,,1,1,,,,,,,,,,,,,,,,,,,,,,,,,,1,,1,healthifyme ,140
+141,Masoor dal Curry,100 gm,1,100,gm,85,13,5.3,1.3,3.8,,,,,,1,1,1,,,,,,,,,1,1,,,,,,,,,,,,,,,,1,,1,Healthifyme,141
+142,Vegetable Mushroom stir fry,100,1,100,g,65,5.8,4,4,2.3,31.8,,,,,,1,1,,,1,,,,,,,,,,,,,,,,,,,,,,,1,,1,,142
+143,Magic Spoon Cereal ,38g ,1,38,g,150,15,13,8,1,,,,,,1,,,,,1,,,,,,,,,,,1,1,,,,,1,,,,,,1,,1,https://tinyurl.com/44nvcv3p,143
+144,Soy Milk (Bonsoy),100ml,1,100,ml,58,5.5,4.1,2.2,1.4,,,,,,1,,,1,1,1,,,,,,,,,1,,,,1,,,,,1,,,,,1,,1,https://tinyurl.com/3r932hev,144
+145,Masala omlete (3 whites + 1 yolk),1,1,1,omlete,155,2,13.6,9.3,0.4,,,,,,1,1,1,,,1,,,,,,1,1,,,,,,,,,,,,1,,,,1,,1,Healthifyme,145
+146,Soy Egg,1,1,1,Whole,69,0,6,5,0,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,1,1,,,,1,,1,From software,146
+147,Kodiak Buttermilk Flapjacks,3 Flapjacks,1,3,Flapjacks,220,37,15,2.5,5,,,,,,1,,,,,,,,,,,1,1,,,1,1,1,,,,,1,,,,,,1,,1,http://tinyurl.com/4uyspd5e,147
+148,Low Fat Plain Greek Yogurt (Nada) ,1 pack,1,1,pack,252,18,21.6,7.2,0,,,,,,1,1,1,1,,1,,,,,,1,1,,,,1,1,,,,,1,,,,,,1,,1,https://tinyurl.com/ym68p4ha,148
+149,Shepu dal (Dal with Dill leaves),100g,1,100,g,76,10,3.8,2.4,2,,,,,,1,1,1,1,1,1,1,1,1,1,1,1,1,1,1,,,,,,,,,,,,,,1,,1,software ,149
+150,Gritzo Supermilk Powder (4-7y) ,2 Scoops,1,2,Scoops,121.85,24.86,6,0.49,3,,,,,,1,,,,,,,,,,,1,1,,1,,1,1,,,,,1,,,,,,1,,1,https://tinyurl.com/2s49mjmh,150

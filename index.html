@@ -1,0 +1,733 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>NutrifyMyDiet — Sign In</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Playfair+Display:ital,wght@0,400;0,500;1,400&display=swap" rel="stylesheet" />
+
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --white:       #FFFFFF;
+      --black:       #000000;
+      --gray-900:    #111827;
+      --gray-700:    #374151;
+      --gray-500:    #6B7280;
+      --gray-400:    #9CA3AF;
+      --gray-200:    #E5E7EB;
+      --gray-100:    #F3F4F6;
+      --gray-50:     #F9FAFB;
+
+      --accent:      #2D6A4F;
+      --accent-hover:#1B4332;
+      --green-50:    #EEF7F0;
+      --green-border:#D1E8D9;
+
+      --error:       #DC2626;
+      --error-bg:    #FEF2F2;
+      --success:     #16A34A;
+      --success-bg:  #F0FDF4;
+
+      --fs-xs:   0.70rem;
+      --fs-sm:   0.825rem;
+      --fs-base: 0.95rem;
+      --fs-xl:   1.35rem;
+      --fs-2xl:  1.75rem;
+
+      --radius-sm: 10px;
+      --radius-lg: 22px;
+    }
+
+    html { font-size: 16px; }
+
+    body {
+      font-family: 'Inter', system-ui, sans-serif;
+      background: #EDF2EE;
+      color: var(--gray-900);
+      min-height: 100dvh;
+      overflow: hidden;
+    }
+
+    /* ═══════════════════════ INTRO SCREEN — UNCHANGED ═══════════════════════ */
+    #intro-screen {
+      position: fixed; inset: 0;
+      background: #000;
+      z-index: 1000;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      overflow: hidden;
+    }
+
+    #intro-screen::before {
+      content: '';
+      position: absolute; inset: 0;
+      background: radial-gradient(ellipse 70% 60% at 50% 45%, rgba(255,255,255,0.06) 0%, transparent 70%);
+      opacity: 0;
+      animation: spotlightIn 1s ease 0.3s forwards;
+    }
+
+    @keyframes spotlightIn { to { opacity: 1; } }
+
+    .intro-figure {
+      position: relative;
+      display: flex; flex-direction: column; align-items: center;
+      opacity: 0;
+      transform: translateY(60px) scale(0.95);
+      animation: figureRise 1s cubic-bezier(0.22,1,0.36,1) 0.8s forwards;
+    }
+
+    @keyframes figureRise { to { opacity: 1; transform: translateY(0) scale(1); } }
+
+    .nutritionist-photo {
+      width: min(400px, 50vw);
+      height: auto; object-fit: contain;
+      filter: drop-shadow(0 20px 60px rgba(255,255,255,0.12)) drop-shadow(0 0 40px rgba(255,255,255,0.05));
+    }
+
+    .speech-bubble {
+      position: absolute;
+      top: -10px;
+      left: calc(50% + min(90px, 20vw));
+      background: rgba(255,255,255,0.94);
+      color: #111;
+      border-radius: 18px 18px 18px 4px;
+      padding: 1rem 1.15rem;
+      width: min(240px, 56vw);
+      box-shadow: 0 8px 40px rgba(0,0,0,0.5);
+      opacity: 0;
+      transform: scale(0.85) translateY(8px);
+      animation: bubblePop 0.6s cubic-bezier(0.34,1.56,0.64,1) 1.6s forwards;
+    }
+
+    @keyframes bubblePop { to { opacity: 1; transform: scale(1) translateY(0); } }
+
+    .speech-bubble::before {
+      content: '';
+      position: absolute; bottom: 22px; left: -9px;
+      width: 18px; height: 18px;
+      background: rgba(255,255,255,0.94);
+      clip-path: polygon(100% 0, 100% 100%, 0 100%);
+    }
+
+    .speech-bubble-greeting {
+      font-size: var(--fs-xs); font-weight: 700;
+      letter-spacing: 0.08em; text-transform: uppercase;
+      color: #555; margin-bottom: 0.3rem;
+    }
+
+    .speech-bubble-main {
+      font-family: 'Playfair Display', serif;
+      font-size: 1rem; font-weight: 500; line-height: 1.4;
+      color: #111; margin-bottom: 0.45rem;
+    }
+
+    .speech-bubble-arrow {
+      display: flex; align-items: center; gap: 0.35rem;
+      margin-top: 0.55rem; font-size: 0.72rem;
+      font-weight: 600; color: #222; letter-spacing: 0.04em;
+    }
+
+    .speech-bubble-arrow svg { animation: arrowPulse 1s ease-in-out infinite; }
+
+    @keyframes arrowPulse {
+      0%, 100% { transform: translateX(0); }
+      50%       { transform: translateX(4px); }
+    }
+
+    #intro-screen.exit { animation: introExit 1s cubic-bezier(0.4,0,1,1) forwards; }
+
+    @keyframes introExit {
+      0%   { opacity: 1; transform: scale(1); }
+      40%  { opacity: 1; transform: scale(1.03); }
+      100% { opacity: 0; transform: scale(0.96); pointer-events: none; }
+    }
+
+    /* ═══════════════════════ MAIN PAGE ═══════════════════════ */
+    #main-page {
+      position: fixed; inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      padding: 1.5rem;
+      opacity: 0; pointer-events: none;
+      overflow-y: auto;
+      background: #f1f2f1;
+    }
+
+    #main-page.visible {
+      opacity: 1; pointer-events: all;
+      animation: pageReveal 0.9s cubic-bezier(0.22,1,0.36,1) forwards;
+    }
+
+    @keyframes pageReveal {
+      from { opacity: 0; transform: translateY(20px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Brand ── */
+    .top-brand {
+      position: absolute; top: 1.6rem;
+      left: 50%; transform: translateX(-50%);
+      display: flex; align-items: center; gap: 0.55rem;
+      white-space: nowrap;
+    }
+
+    .top-brand-icon {
+      width: 32px; height: 32px;
+      background: var(--accent);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      box-shadow: 0 2px 10px rgba(45,106,79,0.28);
+      flex-shrink: 0;
+    }
+
+    .top-brand-name {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.2rem; font-weight: 500;
+      letter-spacing: 0.01em;
+      color: var(--gray-900); line-height: 1;
+    }
+
+    .top-brand-name .brand-highlight {
+      color: var(--accent); font-style: italic;
+    }
+
+    /* ── Card ── */
+    .auth-card {
+      width: 100%; max-width: 460px;
+      background: var(--white);
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-lg);
+      padding: 2.5rem 2.25rem 2rem;
+      box-shadow: 0 4px 24px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04);
+      position: relative;
+    }
+
+    /* ── Tabs ── */
+    .tab-bar {
+      display: flex;
+      background: var(--green-50);
+      border: 1px solid var(--green-border);
+      border-radius: var(--radius-sm);
+      padding: 4px; margin-bottom: 2rem;
+    }
+
+    .tab-btn {
+      flex: 1; padding: 0.6rem;
+      border: none; background: transparent;
+      border-radius: 8px;
+      font-family: 'Inter', inherit;
+      font-size: var(--fs-sm); font-weight: 500;
+      color: var(--gray-500);
+      cursor: pointer;
+      transition: background 0.2s, color 0.2s, box-shadow 0.2s;
+    }
+
+    .tab-btn.active {
+      background: var(--white);
+      color: var(--gray-900);
+      box-shadow: 0 1px 6px rgba(0,0,0,0.10);
+    }
+
+    /* ── Panels ── */
+    .form-panel { display: none; }
+    .form-panel.active {
+      display: flex; flex-direction: column;
+      animation: fadeUp .26s ease both;
+    }
+
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .form-title {
+      font-family: 'Playfair Display', serif;
+      font-size: var(--fs-2xl); font-weight: 400;
+      color: var(--gray-900);
+      margin-bottom: 0.25rem;
+      letter-spacing: -0.02em; line-height: 1.2;
+    }
+
+    .form-subtitle {
+      font-size: var(--fs-sm); color: var(--gray-500);
+      margin-bottom: 1.6rem; font-weight: 400; line-height: 1.5;
+    }
+
+    /* ── Fields ── */
+    .field { margin-bottom: 0.9rem; position: relative; }
+
+    .field label {
+      display: block;
+      font-size: 0.68rem; font-weight: 600;
+      color: var(--gray-700);
+      letter-spacing: 0.09em; text-transform: uppercase;
+      margin-bottom: 0.4rem;
+    }
+
+    .field input {
+      width: 100%; padding: 0.72rem 0.9rem;
+      border: 1px solid var(--gray-200);
+      border-radius: var(--radius-sm);
+      font-family: 'Inter', inherit;
+      font-size: var(--fs-base);
+      color: var(--gray-900);
+      background: var(--gray-50);
+      outline: none;
+      transition: border-color 0.18s, box-shadow 0.18s, background 0.18s;
+    }
+
+    .field input::placeholder { color: var(--gray-400); }
+
+    .field input:focus {
+      border-color: var(--accent);
+      background: var(--white);
+      box-shadow: 0 0 0 3px rgba(45,106,79,0.10);
+    }
+
+    .field input.invalid {
+      border-color: var(--error);
+      box-shadow: 0 0 0 3px rgba(220,38,38,0.08);
+    }
+
+    .field input:-webkit-autofill,
+    .field input:-webkit-autofill:hover,
+    .field input:-webkit-autofill:focus {
+      -webkit-box-shadow: 0 0 0 1000px #F9FAFB inset;
+      -webkit-text-fill-color: #111827;
+    }
+
+    .field-error { font-size: var(--fs-xs); color: var(--error); margin-top: 0.3rem; display: none; }
+    .field-error.visible { display: block; }
+
+    .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: 0.65rem; }
+
+    /* ── Button ── */
+    .btn-primary {
+      display: flex; align-items: center; justify-content: center; gap: 0.5rem;
+      width: 100%; padding: 0.82rem; margin-top: 0.5rem;
+      background: var(--accent); color: var(--white);
+      border: none; border-radius: var(--radius-sm);
+      font-family: 'Inter', inherit;
+      font-size: var(--fs-base); font-weight: 600;
+      letter-spacing: 0.02em; cursor: pointer;
+      transition: background 0.18s, transform 0.12s, box-shadow 0.18s;
+      box-shadow: 0 2px 12px rgba(45,106,79,0.22);
+    }
+
+    .btn-primary:hover:not(:disabled) {
+      background: var(--accent-hover);
+      box-shadow: 0 4px 20px rgba(45,106,79,0.30);
+      transform: translateY(-1px);
+    }
+
+    .btn-primary:active:not(:disabled) { transform: translateY(0); }
+    .btn-primary:disabled { opacity: 0.55; cursor: not-allowed; }
+
+    /* ── Spinner ── */
+    .spinner {
+      width: 17px; height: 17px;
+      border: 2px solid rgba(255,255,255,0.30);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite; flex-shrink: 0;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Alerts ── */
+    .alert {
+      display: none; padding: 0.72rem 0.9rem;
+      border-radius: var(--radius-sm);
+      font-size: var(--fs-sm); margin-top: 0.85rem;
+      line-height: 1.5; font-weight: 400;
+    }
+
+    .alert.visible { display: flex; align-items: flex-start; gap: 0.5rem; }
+
+    .alert-success { background: var(--success-bg); color: var(--success); border: 1px solid #BBF7D0; }
+    .alert-error   { background: var(--error-bg);   color: var(--error);   border: 1px solid #FECACA; }
+    .alert-icon    { flex-shrink: 0; margin-top: 1px; }
+
+    /* ── Divider ── */
+    .divider { height: 1px; background: var(--gray-200); margin: 1.25rem 0 1rem; }
+
+    /* ── Footer ── */
+    .form-footer {
+      font-size: var(--fs-xs); color: var(--gray-500);
+      line-height: 1.6; text-align: center;
+    }
+    .form-footer a, .form-footer button { color: var(--accent); }
+
+    /* ── Responsive ── */
+    @media (max-width: 520px) {
+      .auth-card { padding: 2rem 1.4rem 1.5rem; }
+      .field-row { grid-template-columns: 1fr; gap: 0; }
+      .form-title { font-size: var(--fs-xl); }
+      .speech-bubble {
+        left: 9%; transform: translateX(-50%);
+        top: auto; bottom: calc(100% - 8px);
+        width: 80vw; max-width: 300px; padding: 0.9rem 1rem;
+      }
+      .speech-bubble::before { display: none; }
+      .nutritionist-photo { width: 83vw; }
+      .top-brand-name { font-size: 1rem; }
+    }
+
+    @media (max-width: 360px) { .auth-card { padding: 1.6rem 1rem 1.25rem; } }
+
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { animation: none !important; transition: none !important; }
+    }
+  </style>
+</head>
+
+<body>
+
+  <!-- INTRO SCREEN — UNCHANGED -->
+  <div id="intro-screen" role="presentation" aria-hidden="true">
+    <div class="intro-figure">
+      <img src="nutrition_img_login_page.png" alt="Dr. Maya, Nutritionist" class="nutritionist-photo" />
+      <div class="speech-bubble">
+        <div class="speech-bubble-greeting">Hello there</div>
+        <div class="speech-bubble-main">Ready to transform your health?</div>
+        <div class="speech-bubble-arrow">
+          Start your journey
+          <svg width="16" height="16" viewBox="0 0 16 16" fill="none">
+            <path d="M3 8h10M9 4l4 4-4 4" stroke="#222" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- MAIN PAGE -->
+  <div id="main-page" role="main">
+
+    <!-- Brand -->
+    <div class="top-brand">
+      <div class="top-brand-icon">
+        <svg width="18" height="18" viewBox="0 0 18 18" fill="none" aria-hidden="true">
+          <path d="M3.5 14.5 C3.5 14.5 6 5 15 3 C15 3 15 12 7 14.5 Z" fill="white"/>
+          <path d="M3.5 14.5 L9.5 8.5" stroke="rgba(27,67,50,0.45)" stroke-width="1.2" stroke-linecap="round"/>
+        </svg>
+      </div>
+      <div class="top-brand-name">Nutrify<span class="brand-highlight">MyDiet</span></div>
+    </div>
+
+    <!-- Card -->
+    <div class="auth-card">
+
+      <nav class="tab-bar" role="tablist" aria-label="Login or Sign up">
+        <button class="tab-btn active" id="tab-login" role="tab" aria-selected="true" aria-controls="panel-login" onclick="switchTab('login')">Sign in</button>
+        <button class="tab-btn" id="tab-signup" role="tab" aria-selected="false" aria-controls="panel-signup" onclick="switchTab('signup')">Create account</button>
+      </nav>
+
+      <!-- LOGIN -->
+      <div id="panel-login" class="form-panel active" role="tabpanel" aria-labelledby="tab-login">
+        <h2 class="form-title">Welcome back</h2>
+        <p class="form-subtitle">Continue your nutrition journey.</p>
+
+        <div class="field">
+          <label for="login-email">Email address</label>
+          <input type="email" id="login-email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email"/>
+          <span class="field-error" id="login-email-err" role="alert">Enter a valid email address.</span>
+        </div>
+
+        <div class="field">
+          <label for="login-password">Password</label>
+          <input type="password" id="login-password" name="password" placeholder="Your password" autocomplete="current-password"/>
+          <span class="field-error" id="login-password-err" role="alert">Password is required.</span>
+        </div>
+
+        <button class="btn-primary" id="login-btn" type="button" onclick="handleLogin()">
+          <span id="login-btn-text">Sign in</span>
+        </button>
+
+        <div class="alert alert-error" id="login-error" role="alert" aria-live="assertive">
+          <svg class="alert-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 5v4M8 11v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span id="login-error-msg">Invalid email or password.</span>
+        </div>
+
+        <div class="alert alert-success" id="login-success" role="status" aria-live="polite">
+          <svg class="alert-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5 8.5l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Signed in! Redirecting…</span>
+        </div>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <p class="form-footer">
+          Don't have an account?
+          <button style="background:none;border:none;font:inherit;font-size:inherit;cursor:pointer;text-decoration:underline;padding:0;color:var(--accent);" onclick="switchTab('signup')">Create one free</button>
+        </p>
+      </div>
+
+      <!-- SIGNUP -->
+      <div id="panel-signup" class="form-panel" role="tabpanel" aria-labelledby="tab-signup">
+        <h2 class="form-title">Start your journey</h2>
+        <p class="form-subtitle">Get you Nutrition Plans</p>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="signup-name">Full name</label>
+            <input type="text" id="signup-name" name="fullName" placeholder="Jane Smith" autocomplete="name"/>
+            <span class="field-error" id="signup-name-err" role="alert">Full name is required.</span>
+          </div>
+          <div class="field">
+            <label for="signup-mobile">Mobile number</label>
+            <input type="tel" id="signup-mobile" name="mobileNumber" placeholder="+91 98765 43210" autocomplete="tel" inputmode="tel"/>
+            <span class="field-error" id="signup-mobile-err" role="alert">Enter a valid mobile number.</span>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="signup-email">Email address</label>
+          <input type="email" id="signup-email" name="email" placeholder="you@example.com" autocomplete="email" inputmode="email"/>
+          <span class="field-error" id="signup-email-err" role="alert">Enter a valid email address.</span>
+        </div>
+
+        <div class="field-row">
+          <div class="field">
+            <label for="signup-password">Password</label>
+            <input type="password" id="signup-password" name="password" placeholder="Min. 6 characters" autocomplete="new-password"/>
+            <span class="field-error" id="signup-password-err" role="alert">Password must be at least 6 characters.</span>
+          </div>
+          <div class="field">
+            <label for="signup-confirm">Confirm password</label>
+            <input type="password" id="signup-confirm" name="confirmPassword" placeholder="Repeat password" autocomplete="new-password"/>
+            <span class="field-error" id="signup-confirm-err" role="alert">Passwords do not match.</span>
+          </div>
+        </div>
+
+        <button class="btn-primary" id="signup-btn" type="button" onclick="handleSignup()">
+          <span id="signup-btn-text">Create account</span>
+        </button>
+
+        <div class="alert alert-error" id="signup-error" role="alert" aria-live="assertive">
+          <svg class="alert-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M8 5v4M8 11v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+          </svg>
+          <span id="signup-error-msg">Something went wrong. Please try again.</span>
+        </div>
+
+        <div class="alert alert-success" id="signup-success" role="status" aria-live="polite">
+          <svg class="alert-icon" width="16" height="16" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+            <circle cx="8" cy="8" r="7" stroke="currentColor" stroke-width="1.5"/>
+            <path d="M5 8.5l2 2 4-4" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          <span>Account created — welcome aboard!</span>
+        </div>
+
+        <div class="divider" aria-hidden="true"></div>
+
+        <p class="form-footer">
+          By creating an account you agree to our
+          <a href="#" style="color:var(--accent);">Terms</a> and
+          <a href="#" style="color:var(--accent);">Privacy Policy</a>.
+        </p>
+      </div>
+
+    </div>
+  </div>
+
+  <script>
+    /* ── Intro — UNCHANGED ── */
+    const INTRO_HOLD   = 3800;
+    const INTRO_EXIT   = 1000;
+    const INTRO_REVEAL = 400;
+
+    setTimeout(() => {
+      const intro = document.getElementById('intro-screen');
+      intro.classList.add('exit');
+      setTimeout(() => {
+        intro.style.display = 'none';
+        intro.setAttribute('aria-hidden', 'true');
+        const main = document.getElementById('main-page');
+        main.classList.add('visible');
+        document.body.style.overflow = '';
+      }, INTRO_EXIT + INTRO_REVEAL);
+    }, INTRO_HOLD);
+
+    /* ── Webhook endpoints — UNTOUCHED ── */
+    const SIGNUP_URL = 'http://localhost:5678/webhook-test/signup';
+    const LOGIN_URL  = 'http://localhost:5678/webhook-test/login';
+
+    /* ── Tab switching — UNCHANGED ── */
+    function switchTab(tab) {
+      const tabs  = { login: 'panel-login',  signup: 'panel-signup'  };
+      const btns  = { login: 'tab-login',    signup: 'tab-signup'    };
+      const other = tab === 'login' ? 'signup' : 'login';
+      document.getElementById(tabs[tab]).classList.add('active');
+      document.getElementById(tabs[other]).classList.remove('active');
+      document.getElementById(btns[tab]).classList.add('active');
+      document.getElementById(btns[tab]).setAttribute('aria-selected', 'true');
+      document.getElementById(btns[other]).classList.remove('active');
+      document.getElementById(btns[other]).setAttribute('aria-selected', 'false');
+    }
+
+    function setLoading(btnId, textId, loading) {
+      const btn  = document.getElementById(btnId);
+      const span = document.getElementById(textId);
+      if (loading) {
+        btn.disabled = true;
+        span.innerHTML = '<span class="spinner" aria-hidden="true"></span> Working…';
+      } else {
+        btn.disabled = false;
+        span.innerHTML = btnId === 'login-btn' ? 'Sign in' : 'Create account';
+      }
+    }
+
+    function showAlert(id, visible) {
+      const el = document.getElementById(id);
+      if (visible) el.classList.add('visible');
+      else         el.classList.remove('visible');
+    }
+
+    function setAlertMsg(id, msg) {
+      document.getElementById(id).textContent = msg;
+    }
+
+    function setFieldError(inputId, errId, invalid) {
+      const input = document.getElementById(inputId);
+      const err   = document.getElementById(errId);
+      if (invalid) { input.classList.add('invalid'); err.classList.add('visible'); }
+      else         { input.classList.remove('invalid'); err.classList.remove('visible'); }
+    }
+
+    const emailRe  = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    const mobileRe = /^[+\d][\d\s\-().]{7,19}$/;
+    function isValidEmail(v)  { return emailRe.test(v.trim()); }
+    function isValidMobile(v) { return mobileRe.test(v.trim()); }
+
+    /* ── LOGIN HANDLER — UNCHANGED ── */
+    async function handleLogin() {
+      const email    = document.getElementById('login-email').value.trim();
+      const password = document.getElementById('login-password').value;
+      showAlert('login-error', false);
+      showAlert('login-success', false);
+      let valid = true;
+      if (!isValidEmail(email)) { setFieldError('login-email', 'login-email-err', true); valid = false; }
+      else                        setFieldError('login-email', 'login-email-err', false);
+      if (!password) { setFieldError('login-password', 'login-password-err', true); valid = false; }
+      else             setFieldError('login-password', 'login-password-err', false);
+      if (!valid) return;
+      setLoading('login-btn', 'login-btn-text', true);
+      try {
+        const response = await fetch(LOGIN_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email, password })
+        });
+        const data = await response.json();
+        if (data && data.success === true) {
+          showAlert('login-success', true);
+          setTimeout(() => {
+            localStorage.clear();
+            localStorage.setItem("user_id",       data.user_id);
+            localStorage.setItem("full_name",     data.full_name);
+            localStorage.setItem("email",         data.email);
+            localStorage.setItem("mobile_number", data.mobile_number);
+            window.location.href = 'Assessment.html';
+          }, 800);
+        } else {
+          setAlertMsg('login-error-msg', 'Invalid email or password. Please try again.');
+          showAlert('login-error', true);
+        }
+      } catch (err) {
+        console.error('Login error:', err);
+        setAlertMsg('login-error-msg', 'Unable to reach the server. Check your connection and try again.');
+        showAlert('login-error', true);
+      } finally {
+        setLoading('login-btn', 'login-btn-text', false);
+      }
+    }
+
+    /* ── SIGNUP HANDLER — UNCHANGED ── */
+    async function handleSignup() {
+      const fullName        = document.getElementById('signup-name').value.trim();
+      const mobileNumber    = document.getElementById('signup-mobile').value.trim();
+      const email           = document.getElementById('signup-email').value.trim();
+      const password        = document.getElementById('signup-password').value;
+      const confirmPassword = document.getElementById('signup-confirm').value;
+      showAlert('signup-error', false);
+      showAlert('signup-success', false);
+      let valid = true;
+      if (!fullName) { setFieldError('signup-name', 'signup-name-err', true); valid = false; }
+      else             setFieldError('signup-name', 'signup-name-err', false);
+      if (!isValidMobile(mobileNumber)) { setFieldError('signup-mobile', 'signup-mobile-err', true); valid = false; }
+      else                                setFieldError('signup-mobile', 'signup-mobile-err', false);
+      if (!isValidEmail(email)) { setFieldError('signup-email', 'signup-email-err', true); valid = false; }
+      else                        setFieldError('signup-email', 'signup-email-err', false);
+      if (password.length < 6) { setFieldError('signup-password', 'signup-password-err', true); valid = false; }
+      else                       setFieldError('signup-password', 'signup-password-err', false);
+      if (!confirmPassword || confirmPassword !== password) { setFieldError('signup-confirm', 'signup-confirm-err', true); valid = false; }
+      else                                                    setFieldError('signup-confirm', 'signup-confirm-err', false);
+      if (!valid) return;
+      setLoading('signup-btn', 'signup-btn-text', true);
+      try {
+        const response = await fetch(SIGNUP_URL, {
+          method: 'POST', headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ fullName, email, mobileNumber, password })
+        });
+        if (response.ok) {
+          showAlert('signup-success', true);
+          document.getElementById('signup-name').value     = '';
+          document.getElementById('signup-mobile').value   = '';
+          document.getElementById('signup-email').value    = '';
+          document.getElementById('signup-password').value = '';
+          document.getElementById('signup-confirm').value  = '';
+        } else {
+          const data = await response.json().catch(() => ({}));
+          const msg  = data.message || 'Account creation failed. Please try again.';
+          setAlertMsg('signup-error-msg', msg);
+          showAlert('signup-error', true);
+        }
+      } catch (err) {
+        console.error('Signup error:', err);
+        setAlertMsg('signup-error-msg', 'Unable to reach the server. Check your connection and try again.');
+        showAlert('signup-error', true);
+      } finally {
+        setLoading('signup-btn', 'signup-btn-text', false);
+      }
+    }
+
+    /* ── Clear errors on input — UNCHANGED ── */
+    ['login-email','login-password'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        document.getElementById(id).classList.remove('invalid');
+        document.getElementById(id + '-err').classList.remove('visible');
+        showAlert('login-error', false);
+      });
+    });
+
+    ['signup-name','signup-mobile','signup-email','signup-password','signup-confirm'].forEach(id => {
+      document.getElementById(id).addEventListener('input', () => {
+        document.getElementById(id).classList.remove('invalid');
+        const errMap = {
+          'signup-name':'signup-name-err','signup-mobile':'signup-mobile-err',
+          'signup-email':'signup-email-err','signup-password':'signup-password-err','signup-confirm':'signup-confirm-err'
+        };
+        if (errMap[id]) document.getElementById(errMap[id]).classList.remove('visible');
+        showAlert('signup-error', false);
+      });
+    });
+
+    document.addEventListener('keydown', (e) => {
+      if (e.key !== 'Enter') return;
+      const loginActive = document.getElementById('panel-login').classList.contains('active');
+      if (loginActive) handleLogin(); else handleSignup();
+    });
+  </script>
+
+</body>
+</html>

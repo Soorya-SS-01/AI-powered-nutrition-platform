@@ -1,0 +1,1806 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>Clinician Dashboard — Nutrition & Meetings</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink:         #0d0d0d;
+    --ink-mid:     #3a3a3a;
+    --ink-soft:    #767676;
+    --ink-mute:    #aaaaaa;
+    --paper:       #f5f5f5;
+    --card:        #ffffff;
+    --line:        #d4d4d4;
+    --line-dark:   #b0b0b0;
+    --accent:      #111111;
+    --accent-soft: #e8e8e8;
+    --green:       #1a5c38;
+    --green-tint:  #eaf4ee;
+    --red:         #8b1a1a;
+    --red-tint:    #faeaea;
+    --amber:       #7a5200;
+    --amber-tint:  #fdf6e3;
+    --radius:      0px;
+    --serif:       "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --sans:        "Inter", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    --mono:        "Courier New", Courier, monospace;
+    --shadow:      0 2px 12px rgba(0,0,0,0.08);
+    --shadow-lg:   0 8px 40px rgba(0,0,0,0.14);
+  }
+
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  html, body {
+    width: 100%;
+    min-height: 100vh;
+    background: var(--paper);
+    color: var(--ink);
+    font-family: var(--sans);
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .topbar {
+    background: var(--ink);
+    color: #fff;
+    padding: 0 48px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    height: 64px;
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    border-bottom: 3px solid #fff;
+  }
+  .topbar-brand { display: flex; align-items: baseline; gap: 18px; }
+  .topbar-brand h1 { font-family: var(--sans); font-size: 20px; font-weight: 700; letter-spacing: 0.04em; text-transform: uppercase; color: #fff; }
+  .topbar-brand .divider { color: #555; font-size: 20px; }
+  .topbar-brand .subtitle { font-family: var(--mono); font-size: 11px; color: #aaa; letter-spacing: 0.12em; text-transform: uppercase; }
+  .topbar-date { font-family: var(--mono); font-size: 11px; color: #888; letter-spacing: 0.1em; }
+
+  .page-nav { background: var(--card); border-bottom: 2px solid var(--ink); display: flex; padding: 0 48px; gap: 0; }
+  .page-nav-tab { font-family: var(--sans); font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; padding: 16px 28px; cursor: pointer; background: none; border: none; border-bottom: 3px solid transparent; color: var(--ink-soft); transition: color 0.15s, border-color 0.15s; margin-bottom: -2px; }
+  .page-nav-tab:hover { color: var(--ink); }
+  .page-nav-tab.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+  .section-panel { display: none; width: 100%; }
+  .section-panel.active { display: block; }
+
+  .section-header { background: var(--card); border-bottom: 1px solid var(--line); padding: 22px 48px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 14px; }
+  .section-header h2 { font-family: var(--sans); font-size: 26px; font-weight: 700; letter-spacing: -0.01em; color: var(--ink); }
+  .section-header .section-meta { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); letter-spacing: 0.02em; }
+
+  .content-area { padding: 32px 48px 60px; width: 100%; }
+
+  .toolbar { display: flex; gap: 12px; align-items: center; flex-wrap: wrap; margin-bottom: 22px; }
+  .search-wrap { position: relative; flex: 1 1 320px; max-width: 480px; }
+  .search-wrap input { width: 100%; padding: 12px 14px 12px 38px; border: 1.5px solid var(--line-dark); border-radius: var(--radius); font-family: var(--sans); font-size: 14px; background: var(--card); color: var(--ink); transition: border-color 0.15s; }
+  .search-wrap input:focus { outline: none; border-color: var(--ink); }
+  .search-wrap svg { position: absolute; left: 12px; top: 50%; transform: translateY(-50%); width: 15px; height: 15px; stroke: var(--ink-soft); fill: none; stroke-width: 2; stroke-linecap: round; }
+  .count-pill { font-family: var(--sans); font-size: 12px; color: var(--ink-soft); margin-left: auto; letter-spacing: 0.02em; }
+
+  .btn { font-family: var(--sans); font-size: 12px; font-weight: 600; letter-spacing: 0.04em; text-transform: uppercase; padding: 11px 22px; border-radius: var(--radius); cursor: pointer; border: 1.5px solid transparent; transition: background 0.15s, color 0.15s, border-color 0.15s; display: inline-flex; align-items: center; gap: 7px; text-decoration: none; }
+  .btn-dark  { background: var(--ink);  color: #fff;  border-color: var(--ink); }
+  .btn-dark:hover { background: var(--ink-mid); border-color: var(--ink-mid); }
+  .btn-outline { background: var(--card); color: var(--ink); border-color: var(--line-dark); }
+  .btn-outline:hover { border-color: var(--ink); }
+  .btn-green { background: var(--green); color: #fff; border-color: var(--green); }
+  .btn-green:hover { background: #0f3d25; border-color: #0f3d25; }
+  .btn-ghost { background: transparent; color: var(--ink-soft); border-color: var(--line); }
+  .btn-ghost:hover { color: var(--ink); border-color: var(--ink-soft); }
+  .btn-danger { background: var(--red); color: #fff; border-color: var(--red); }
+  .btn-danger:hover { background: #6b1414; }
+  .btn:disabled { opacity: 0.45; cursor: not-allowed; }
+  .btn-sm { padding: 7px 14px; font-size: 11px; }
+  .btn-xs { padding: 5px 10px; font-size: 10px; }
+
+  .data-card { background: var(--card); border: 1.5px solid var(--line-dark); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); }
+
+  table { width: 100%; border-collapse: collapse; font-size: 14px; }
+  thead th { text-align: left; font-family: var(--sans); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; font-weight: 600; padding: 14px 18px; border-bottom: 2px solid var(--ink); background: var(--ink); color: #bbb; white-space: nowrap; }
+  tbody td { padding: 15px 18px; border-bottom: 1px solid var(--line); vertical-align: middle; font-family: var(--sans); font-size: 14px; color: var(--ink); }
+  tbody tr:last-child td { border-bottom: none; }
+  tbody tr:hover { background: var(--accent-soft); }
+
+  .cell-name  { font-weight: 600; font-size: 14px; }
+  .cell-sub   { color: var(--ink-soft); font-size: 13px; }
+  .cell-mono  { font-family: var(--mono); font-size: 12.5px; }
+
+  .badge { display: inline-flex; align-items: center; gap: 5px; font-family: var(--sans); font-size: 10.5px; font-weight: 600; text-transform: uppercase; letter-spacing: 0.06em; padding: 4px 11px; border-radius: 99px; }
+  .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; }
+  .badge-pending  { background: var(--amber-tint); color: var(--amber); border: 1px solid #e0c570; }
+  .badge-pending::before { background: var(--amber); }
+  .badge-approved { background: var(--green-tint); color: var(--green); border: 1px solid #9bcfb0; }
+  .badge-approved::before { background: var(--green); }
+  .badge-scheduled { background: #e8e8e8; color: var(--ink-mid); border: 1px solid var(--line-dark); }
+  .badge-scheduled::before { background: var(--ink-soft); }
+  .badge-completed { background: var(--green-tint); color: var(--green); border: 1px solid #9bcfb0; }
+  .badge-completed::before { background: var(--green); }
+
+  .view-btn { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 16px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); border-radius: var(--radius); cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .view-btn:hover { background: var(--ink); color: #fff; }
+
+  .empty-state, .loading-state { padding: 64px 20px; text-align: center; color: var(--ink-soft); font-family: var(--sans); font-size: 15px; }
+  .empty-state strong, .loading-state strong { display: block; font-family: var(--sans); font-size: 18px; color: var(--ink); margin-bottom: 8px; font-weight: 600; }
+
+  .overlay { position: fixed; inset: 0; background: rgba(13,13,13,0.65); display: none; align-items: flex-start; justify-content: center; padding: 28px 24px; z-index: 100; overflow-y: auto; }
+  .overlay.open { display: flex; }
+
+  .modal { background: var(--card); border: 2px solid var(--ink); border-radius: var(--radius); max-width: 1040px; width: 100%; margin: auto; box-shadow: var(--shadow-lg); animation: rise 0.2s ease-out; }
+  @keyframes rise { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: translateY(0); } }
+  .modal-head { display: flex; justify-content: space-between; align-items: flex-start; padding: 24px 30px; border-bottom: 2px solid var(--ink); background: var(--ink); color: #fff; gap: 12px; }
+  .modal-head h2 { font-family: var(--sans); font-size: 20px; font-weight: 700; color: #fff; margin-bottom: 4px; }
+  .modal-head .plan-meta { font-family: var(--sans); font-size: 12px; color: #aaa; letter-spacing: 0.04em; }
+  .close-btn { background: none; border: none; color: #888; font-size: 26px; line-height: 1; cursor: pointer; padding: 4px; flex-shrink: 0; }
+  .close-btn:hover { color: #fff; }
+
+  .modal-body { padding: 28px 30px; max-height: 80vh; overflow-y: auto; }
+  .modal-foot { display: flex; justify-content: flex-end; gap: 10px; padding: 18px 30px; border-top: 1px solid var(--line); background: var(--paper); }
+
+  .section-label { font-family: var(--sans); font-size: 10.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 600; margin: 26px 0 10px; display: flex; align-items: center; gap: 12px; }
+  .section-label::after { content: ""; flex: 1; height: 1px; background: var(--line-dark); }
+  .section-label:first-child { margin-top: 0; }
+
+  .info-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 12px; }
+  .info-grid > div { background: var(--paper); border: 1px solid var(--line); padding: 12px 14px; }
+  .info-grid label { display: block; font-family: var(--sans); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 600; margin-bottom: 5px; }
+  .info-grid span { font-family: var(--sans); font-size: 14px; font-weight: 600; }
+
+  /* Patient Assessment — collapsible (Change 2) */
+  .assessment-toggle {
+    display: flex; align-items: center; gap: 10px; width: 100%;
+    background: var(--paper); border: 1.5px solid var(--line-dark);
+    padding: 13px 16px; cursor: pointer; font-family: var(--sans);
+    font-size: 11px; font-weight: 700; text-transform: uppercase;
+    letter-spacing: 0.09em; color: var(--ink); text-align: left;
+    transition: border-color 0.15s, background 0.15s;
+  }
+  .assessment-toggle:hover { border-color: var(--ink); background: var(--accent-soft); }
+  .assessment-toggle .chevron { font-size: 11px; color: var(--ink-soft); transition: transform 0.15s; width: 12px; display: inline-block; }
+  .assessment-toggle[aria-expanded="true"] .chevron { color: var(--ink); }
+  .assessment-panel { display: none; border: 1.5px solid var(--line-dark); border-top: none; padding: 16px; background: var(--card); }
+  .assessment-panel.open { display: block; }
+
+  .assessment-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 12px; }
+  .assessment-item { background: var(--paper); border: 1px solid var(--line); padding: 12px 14px; min-width: 0; }
+  .assessment-item.wide { grid-column: span 2; }
+  .assessment-item label { display: block; font-family: var(--sans); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 600; margin-bottom: 5px; }
+  .assessment-item span { font-family: var(--sans); font-size: 13.5px; font-weight: 600; line-height: 1.5; word-wrap: break-word; overflow-wrap: anywhere; white-space: pre-wrap; }
+  .assessment-item span.not-specified { color: var(--ink-mute); font-weight: 500; font-style: italic; }
+
+  .summary-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 12px; }
+  .stat-box { background: var(--ink); color: #fff; padding: 16px; text-align: center; }
+  .stat-box label { display: block; font-family: var(--sans); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.1em; color: #888; font-weight: 600; margin-bottom: 6px; }
+  .stat-box span { font-family: var(--sans); font-size: 20px; font-weight: 700; color: #fff; }
+
+  .plan-cards-grid { display: flex; flex-direction: column; gap: 22px; margin-top: 6px; }
+
+  .plan-card { border: 2px solid var(--line-dark); transition: border-color 0.2s; }
+  .plan-card.selected { border-color: var(--green); box-shadow: 0 0 0 3px rgba(26,92,56,0.12); }
+  .plan-card.disabled-card { opacity: 0.5; pointer-events: none; }
+
+  .plan-card-header { display: flex; align-items: center; justify-content: space-between; padding: 14px 20px; background: var(--paper); border-bottom: 1px solid var(--line); flex-wrap: wrap; gap: 8px; }
+  .plan-card-title { font-family: var(--sans); font-size: 12px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; display: flex; align-items: center; gap: 10px; flex-wrap: wrap; min-width: 0; }
+  .plan-tag { padding: 3px 12px; border-radius: 99px; font-size: 10.5px; }
+  .plan-tag-a { background: #1a1a1a; color: #fff; }
+  .plan-tag-b { background: #444; color: #fff; }
+  .plan-tag-c { background: #777; color: #fff; }
+  .plan-selected-badge { background: var(--green); color: #fff; font-family: var(--sans); font-size: 10px; font-weight: 700; padding: 4px 12px; border-radius: 99px; text-transform: uppercase; letter-spacing: 0.06em; }
+
+  .plan-card-macros { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 1px; background: var(--line); border-bottom: 1px solid var(--line); }
+  .macro-box { background: var(--card); padding: 12px; text-align: center; min-width: 0; }
+  .macro-box label { display: block; font-family: var(--sans); font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); font-weight: 600; margin-bottom: 4px; }
+  .macro-box span { font-family: var(--sans); font-size: 16px; font-weight: 700; color: var(--ink); word-wrap: break-word; overflow-wrap: anywhere; display: block; }
+
+  .plan-card-body { padding: 20px; overflow: visible; }
+
+  .meal-schedule { display: flex; flex-direction: column; gap: 14px; }
+  .meal-row { display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 14px; align-items: start; height: auto; }
+  .meal-time { font-family: var(--mono); font-size: 10.5px; font-weight: 700; color: var(--ink); background: var(--paper); border: 1px solid var(--line-dark); padding: 8px 10px; text-align: center; letter-spacing: 0.04em; white-space: normal; overflow-wrap: anywhere; align-self: start; }
+  .meal-foods { font-family: var(--sans); font-size: 13.5px; line-height: 1.7; color: var(--ink); overflow-wrap: anywhere; word-break: break-word; min-width: 0; height: auto; }
+  .meal-foods ul { margin: 0; padding-left: 18px; }
+  .meal-foods li { margin-bottom: 6px; overflow-wrap: anywhere; word-break: break-word; }
+  .food-item-detail { color: var(--ink-soft); font-size: 12px; font-family: var(--mono); overflow-wrap: anywhere; }
+
+  .supplement-list { display: flex; flex-direction: column; gap: 8px; }
+  .supplement-item { display: flex; gap: 12px; align-items: flex-start; padding: 10px 14px; background: var(--paper); border: 1px solid var(--line); font-family: var(--sans); font-size: 13.5px; min-width: 0; }
+  .supplement-dot { width: 8px; height: 8px; border-radius: 50%; background: var(--ink-mid); flex-shrink: 0; margin-top: 5px; }
+  .supplement-name { font-weight: 600; overflow-wrap: anywhere; }
+  .supplement-detail { color: var(--ink-soft); font-family: var(--mono); font-size: 12px; overflow-wrap: anywhere; }
+
+  .notes-box { background: var(--amber-tint); border: 1px solid #e0c88a; padding: 16px 18px; font-family: var(--sans); font-size: 14px; line-height: 1.7; color: var(--ink); overflow-wrap: anywhere; }
+
+  /* Editable meal / food-item interface */
+  .edit-meal-schedule { display: flex; flex-direction: column; gap: 16px; }
+  .edit-meal-row { display: grid; grid-template-columns: 150px minmax(0,1fr); gap: 14px; align-items: start; }
+  .edit-food-body { display: flex; flex-direction: column; gap: 8px; min-width: 0; }
+  .edit-food-list { display: flex; flex-direction: column; gap: 8px; }
+  .edit-food-row { display: grid; grid-template-columns: minmax(0,1fr) 130px 32px; gap: 8px; align-items: center; }
+  .edit-food-name, .edit-food-qty {
+    padding: 9px 11px; border: 1.5px solid var(--line-dark); border-radius: var(--radius);
+    font-family: var(--sans); font-size: 13px; background: var(--card); color: var(--ink); width: 100%; min-width: 0;
+  }
+  .edit-food-name:focus, .edit-food-qty:focus { outline: 2px solid var(--ink); outline-offset: 0; border-color: var(--ink); }
+  .remove-food-btn {
+    width: 32px; height: 32px; border: 1.5px solid var(--line-dark); background: var(--card);
+    color: var(--ink-soft); cursor: pointer; font-size: 14px; line-height: 1; flex-shrink: 0;
+    transition: border-color 0.15s, color 0.15s;
+  }
+  .remove-food-btn:hover { border-color: var(--red); color: var(--red); }
+  .add-food-btn {
+    align-self: flex-start; font-family: var(--sans); font-size: 10.5px; font-weight: 600;
+    letter-spacing: 0.06em; text-transform: uppercase; padding: 7px 14px; border: 1.5px dashed var(--line-dark);
+    background: transparent; color: var(--ink-soft); cursor: pointer; transition: border-color 0.15s, color 0.15s;
+  }
+  .add-food-btn:hover { border-color: var(--ink); color: var(--ink); }
+  .no-items-msg { color: var(--ink-soft); font-size: 12.5px; font-family: var(--sans); font-style: italic; }
+
+  .plan-card-actions { display: flex; gap: 10px; padding: 14px 20px; border-top: 1px solid var(--line); background: var(--paper); flex-wrap: wrap; align-items: center; }
+  .edit-toggle-btn { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 16px; border: 1.5px solid var(--line-dark); background: var(--card); color: var(--ink); cursor: pointer; transition: border-color 0.15s; }
+  .edit-toggle-btn:hover { border-color: var(--ink); }
+
+  .save-plan-btn { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 16px; border: 1.5px solid var(--ink); background: var(--ink); color: #fff; cursor: pointer; display: none; transition: background 0.15s; }
+  .save-plan-btn:hover { background: var(--ink-mid); }
+  .save-plan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .approve-plan-btn { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 8px 18px; border: none; background: var(--green); color: #fff; cursor: pointer; margin-left: auto; transition: background 0.15s; }
+  .approve-plan-btn:hover { background: #0f3d25; }
+  .approve-plan-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .plan-save-status { font-family: var(--sans); font-size: 11px; display: none; }
+  .plan-save-status.show { display: inline; }
+  .plan-save-status.ok  { color: var(--green); }
+  .plan-save-status.err { color: var(--red); }
+
+  .final-approval-section { margin-top: 30px; border: 2px solid var(--green); }
+  .final-approval-header { background: var(--green); padding: 16px 22px; border-bottom: 1px solid #1a5c38; }
+  .final-approval-header h3 { font-family: var(--sans); font-size: 17px; font-weight: 700; color: #fff; margin-bottom: 3px; }
+  .final-approval-header p { font-family: var(--sans); font-size: 12px; color: rgba(255,255,255,0.7); letter-spacing: 0.02em; }
+  .final-approval-body { padding: 20px 22px; }
+  .selected-plan-tag { display: inline-flex; align-items: center; gap: 8px; background: var(--green); color: #fff; padding: 6px 18px; font-family: var(--sans); font-size: 12px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; margin-bottom: 18px; }
+
+  .form-row { display: flex; flex-direction: column; gap: 6px; margin-bottom: 16px; }
+  .form-row label { font-family: var(--sans); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 600; }
+  .form-row input[type="text"],
+  .form-row input[type="number"],
+  .form-row input[type="date"],
+  .form-row input[type="time"],
+  .form-row input[type="url"],
+  .form-row select { padding: 11px 14px; border: 1.5px solid var(--line-dark); border-radius: var(--radius); font-family: var(--sans); font-size: 14px; background: var(--card); color: var(--ink); width: 100%; }
+  .form-row input:focus, .form-row select:focus { outline: 2px solid var(--ink); outline-offset: 0; border-color: var(--ink); }
+  .form-row input.invalid { border-color: var(--red); }
+
+  .validation-msg { font-family: var(--sans); font-size: 11.5px; color: var(--red); display: none; }
+  .validation-msg.show { display: block; }
+
+  .final-approve-btn { font-family: var(--sans); font-size: 12.5px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; padding: 14px 32px; border: none; background: var(--green); color: #fff; cursor: pointer; transition: background 0.15s; }
+  .final-approve-btn:hover { background: #0f3d25; }
+  .final-approve-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+  .final-status-msg { margin-top: 14px; padding: 12px 16px; font-family: var(--sans); font-size: 13.5px; display: none; border-left: 4px solid transparent; }
+  .final-status-msg.show { display: block; }
+  .final-status-msg.ok   { background: var(--green-tint); color: var(--green); border-left-color: var(--green); }
+  .final-status-msg.err  { background: var(--red-tint); color: var(--red); border-left-color: var(--red); }
+  .final-status-msg.info { background: #e8e8e8; color: var(--ink-mid); border-left-color: var(--ink-mid); }
+
+  .meetings-container { display: flex; flex-direction: column; gap: 14px; }
+  .meeting-row-block { background: var(--paper); border: 1px solid var(--line-dark); padding: 16px 18px; }
+  .meeting-row-title { font-family: var(--sans); font-size: 10.5px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; color: var(--ink-soft); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; }
+  .meeting-fields { display: grid; grid-template-columns: 1fr 1fr 2fr; gap: 12px; align-items: end; }
+  .remove-meeting-btn { font-family: var(--sans); font-size: 10px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 5px 12px; border: 1.5px solid #ccc; background: transparent; color: var(--ink-soft); cursor: pointer; transition: border-color 0.15s, color 0.15s; }
+  .remove-meeting-btn:hover { border-color: var(--red); color: var(--red); }
+
+  .add-meeting-btn { font-family: var(--sans); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 10px 20px; border: 1.5px dashed var(--line-dark); background: transparent; color: var(--ink-soft); cursor: pointer; width: 100%; margin-top: 10px; transition: border-color 0.15s, color 0.15s; }
+  .add-meeting-btn:hover { border-color: var(--ink); color: var(--ink); }
+
+  /* Meeting time picker (3 dropdowns: hour / minute / AM-PM) */
+  .time-picker { display: flex; gap: 8px; align-items: center; }
+  .time-picker select { padding: 11px 10px; border: 1.5px solid var(--line-dark); border-radius: var(--radius); font-family: var(--sans); font-size: 14px; background: var(--card); color: var(--ink); }
+  .time-picker .time-sep { font-family: var(--sans); font-weight: 700; color: var(--ink-soft); }
+  .time-picker select.tp-hour, .time-picker select.tp-minute { width: 72px; }
+  .time-picker select.tp-ampm { width: 84px; }
+
+  /* 3-column stats grid */
+  .stats-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; background: var(--line); border: 2px solid var(--ink); margin-bottom: 28px; }
+  .stats-box { background: var(--card); padding: 20px 22px; text-align: center; border-right: 1px solid var(--line); }
+  .stats-box:last-child { border-right: none; }
+  .stats-box .stat-value { font-family: var(--sans); font-size: 28px; font-weight: 700; color: var(--ink); display: block; line-height: 1.1; }
+  .stats-box .stat-label { font-family: var(--sans); font-size: 10px; text-transform: uppercase; letter-spacing: 0.1em; color: var(--ink-soft); font-weight: 600; display: block; margin-top: 6px; }
+  .stats-box.highlight { background: var(--ink); }
+  .stats-box.highlight .stat-value { color: #fff; }
+  .stats-box.highlight .stat-label { color: #888; }
+
+  .tab-bar { display: flex; border-bottom: 2px solid var(--ink); margin-bottom: 20px; background: var(--card); }
+  .tab-btn { font-family: var(--sans); font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.08em; padding: 14px 26px; cursor: pointer; background: none; border: none; border-bottom: 3px solid transparent; color: var(--ink-soft); margin-bottom: -2px; transition: color 0.15s, border-color 0.15s; }
+  .tab-btn:hover { color: var(--ink); }
+  .tab-btn.active { color: var(--ink); border-bottom-color: var(--ink); }
+
+  .tab-panel { display: none; }
+  .tab-panel.active { display: block; }
+
+  .join-btn { font-family: var(--sans); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 14px; border: 1.5px solid var(--green); background: transparent; color: var(--green); cursor: pointer; text-decoration: none; display: inline-block; transition: background 0.15s, color 0.15s; }
+  .join-btn:hover { background: var(--green); color: #fff; }
+
+  .complete-btn { font-family: var(--sans); font-size: 10.5px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; padding: 6px 14px; border: 1.5px solid var(--ink); background: transparent; color: var(--ink); cursor: pointer; transition: background 0.15s, color 0.15s; }
+  .complete-btn:hover { background: var(--ink); color: #fff; }
+
+  @media (max-width: 900px) {
+    .topbar, .page-nav, .content-area, .section-header { padding-left: 20px; padding-right: 20px; }
+    .info-grid, .summary-grid { grid-template-columns: 1fr 1fr; }
+    .assessment-grid { grid-template-columns: 1fr 1fr; }
+    .assessment-item.wide { grid-column: span 2; }
+    .plan-card-macros { grid-template-columns: 1fr 1fr; }
+    .meal-row { grid-template-columns: 1fr; gap: 6px; }
+    .edit-meal-row { grid-template-columns: 1fr; gap: 6px; }
+    .edit-food-row { grid-template-columns: 1fr 100px 32px; }
+    .meeting-fields { grid-template-columns: 1fr; }
+    .stats-grid { grid-template-columns: repeat(2, 1fr); }
+    .stats-box { border-right: none; border-bottom: 1px solid var(--line); }
+  }
+  @media (max-width: 600px) {
+    .assessment-grid { grid-template-columns: 1fr; }
+    .assessment-item.wide { grid-column: span 1; }
+  }
+  @media (prefers-reduced-motion: reduce) { .modal { animation: none; } }
+</style>
+</head>
+<body>
+
+<header class="topbar">
+  <div class="topbar-brand">
+    <h1>NutrifyMyDiet</h1>
+    <span class="divider">|</span>
+    <span class="subtitle">Clinician Dashboard</span>
+  </div>
+  <span class="topbar-date" id="topbarDate"></span>
+</header>
+
+<nav class="page-nav">
+  <button class="page-nav-tab active" data-section="section-plans">Nutrition Plans</button>
+  <button class="page-nav-tab" data-section="section-meetings">Meetings</button>
+</nav>
+
+<!-- SECTION 1 — NUTRITION PLANS -->
+<div class="section-panel active" id="section-plans">
+  <div class="section-header">
+    <h2>Nutrition Plan Review</h2>
+    <span class="section-meta">Review &amp; approve client nutrition plans</span>
+  </div>
+  <div class="content-area">
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg viewBox="0 0 24 24" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg>
+        <input type="text" id="searchInput" placeholder="Search by name, email or plan…">
+      </div>
+      <button class="btn btn-outline" id="refreshBtn">↻ Refresh</button>
+      <span class="count-pill" id="countPill"></span>
+    </div>
+    <div class="data-card">
+      <table id="plansTable">
+        <thead>
+          <tr>
+            <th>Client</th>
+            <th>Email</th>
+            <th>Phone</th>
+            <th>Status</th>
+            <th>Reviewed By</th>
+            <th>Created</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody id="plansBody">
+          <tr><td colspan="7"><div class="loading-state"><strong>Loading plans…</strong>Fetching records from Supabase.</div></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+
+<!-- SECTION 2 — MEETINGS -->
+<div class="section-panel" id="section-meetings">
+  <div class="section-header">
+    <h2>Meetings</h2>
+    <span class="section-meta">Schedule &amp; track client follow-up meetings</span>
+  </div>
+  <div class="content-area">
+
+    <!-- Meeting Statistics — 3 cards -->
+    <div class="stats-grid" id="meetingStats">
+      <div class="stats-box">
+        <span class="stat-value" id="statTotal">—</span>
+        <span class="stat-label">Total Meetings</span>
+      </div>
+      <div class="stats-box">
+        <span class="stat-value" id="statCompleted">—</span>
+        <span class="stat-label">Completed</span>
+      </div>
+      <div class="stats-box">
+        <span class="stat-value" id="statRemaining">—</span>
+        <span class="stat-label">Remaining</span>
+      </div>
+    </div>
+
+    <!-- Meeting Tabs -->
+    <div class="tab-bar">
+      <button class="tab-btn active" data-tab="tab-upcoming">Upcoming Meetings</button>
+      <button class="tab-btn" data-tab="tab-completed">Completed Meetings</button>
+    </div>
+
+    <!-- TAB: UPCOMING — 7 columns -->
+    <div class="tab-panel active" id="tab-upcoming">
+      <div class="data-card">
+        <table id="upcomingTable">
+          <thead>
+            <tr>
+              <th>Client Name</th>
+              <th>Doctor Name</th>
+              <th>Meeting Date</th>
+              <th>Meeting Time</th>
+              <th>Google Meet</th>
+              <th>Status</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody id="upcomingBody">
+            <tr><td colspan="7"><div class="loading-state"><strong>Loading…</strong>Fetching upcoming meetings.</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB: COMPLETED — 6 columns -->
+    <div class="tab-panel" id="tab-completed">
+      <div class="data-card">
+        <table id="completedTable">
+          <thead>
+            <tr>
+              <th>Client Name</th>
+              <th>Doctor Name</th>
+              <th>Meeting Date</th>
+              <th>Meeting Time</th>
+              <th>Google Meet</th>
+              <th>Completed Date</th>
+            </tr>
+          </thead>
+          <tbody id="completedBody">
+            <tr><td colspan="6"><div class="loading-state"><strong>Loading…</strong>Fetching completed meetings.</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<!-- PLAN REVIEW MODAL -->
+<div class="overlay" id="overlay">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+
+    <div class="modal-head">
+      <div>
+        <h2 id="modalTitle">Client</h2>
+        <div class="plan-meta" id="modalPlanName"></div>
+      </div>
+      <button class="close-btn" id="closeBtn" aria-label="Close">&times;</button>
+    </div>
+
+    <div class="modal-body" id="modalBody">
+
+      <div class="section-label">Client Details</div>
+      <div class="info-grid">
+        <div><label>Name</label><span id="vName">—</span></div>
+        <div><label>Email</label><span id="vEmail">—</span></div>
+        <div><label>Phone</label><span id="vPhone">—</span></div>
+      </div>
+
+      <!-- Patient Assessment — collapsible (Change 2), sourced via user_id (Change 1) -->
+      <div class="section-label" style="margin-top:28px;">Patient Assessment</div>
+      <button type="button" class="assessment-toggle" id="assessmentToggle" aria-expanded="false" aria-controls="assessmentPanel">
+        <span class="chevron" id="assessmentChevron">▼</span>
+        <span>Patient Assessment</span>
+      </button>
+      <div class="assessment-panel" id="assessmentPanel">
+        <div class="assessment-grid" id="assessmentGrid"></div>
+      </div>
+
+      <div class="section-label" style="margin-top:28px;">Overall Nutrition Summary</div>
+      <div class="summary-grid">
+        <div class="stat-box"><label>Total Calories</label><span id="vCalories">—</span></div>
+        <div class="stat-box"><label>Protein</label><span id="vProtein">—</span></div>
+        <div class="stat-box"><label>Carbohydrates</label><span id="vCarbs">—</span></div>
+        <div class="stat-box"><label>Fat</label><span id="vFat">—</span></div>
+      </div>
+
+      <div class="section-label" style="margin-top:28px;">Nutrition Plans — Select One to Approve</div>
+      <div class="plan-cards-grid" id="planCardsGrid"></div>
+
+      <div class="section-label" style="margin-top:28px;" id="supplementsLabel">Supplements</div>
+      <div id="supplementsDisplay"></div>
+
+      <div class="section-label" id="notesLabel">Nutritionist Notes</div>
+      <div id="notesDisplay"></div>
+
+      <!-- FINAL APPROVAL SECTION -->
+      <div class="final-approval-section" id="finalApprovalSection" style="display:none;">
+        <div class="final-approval-header">
+          <h3>✓ Final Approval &amp; Email</h3>
+          <p>Review the selected plan, complete the fields below, then send to the client.</p>
+        </div>
+        <div class="final-approval-body">
+
+          <div id="selectedPlanTag"></div>
+
+          <!-- Doctor Name (unchanged) -->
+          <div class="form-row">
+            <label for="doctorName">Reviewing Doctor's Name (required)</label>
+            <input type="text" id="doctorName" placeholder="e.g. Dr. Rajesh Kumar" style="max-width:420px;">
+            <div class="validation-msg" id="doctorValidation">Enter the doctor's name before approving.</div>
+          </div>
+
+          <!-- Plan Duration (existing) -->
+          <div class="form-row">
+            <label for="planDurationDays">Plan Duration (Days)</label>
+            <input type="number" id="planDurationDays" placeholder="e.g. 45" min="1" style="max-width:180px;">
+          </div>
+
+          <!-- Meeting Scheduler (existing) -->
+          <div class="section-label" style="margin: 22px 0 12px;">Meeting Schedule</div>
+          <div class="meetings-container" id="meetingsContainer"></div>
+          <button class="add-meeting-btn" id="addMeetingBtn" onclick="addMeeting()">+ Add Another Meeting</button>
+
+          <div style="margin-top:24px;">
+            <button class="final-approve-btn" id="finalApproveBtn">Final Approval &amp; Send Email</button>
+          </div>
+          <div class="final-status-msg" id="finalStatusMsg"></div>
+
+        </div>
+      </div>
+
+    </div>
+
+    <div class="modal-foot">
+      <button class="btn btn-outline" id="cancelBtn">Close</button>
+    </div>
+  </div>
+</div>
+
+<script type="module">
+  import { createClient } from 'https://esm.sh/@supabase/supabase-js';
+
+  const SUPABASE_URL = 'https://fgdflooqpuomzoxuzggc.supabase.co';
+  const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImZnZGZsb29xcHVvbXpveHV6Z2djIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODEwMzQ0NzksImV4cCI6MjA5NjYxMDQ3OX0.FfxDAwAv3r3il1slPvyFbpFX7hLIUBSq98ouepGEy9w';
+  const N8N_WEBHOOK  = 'http://localhost:5678/webhook-test/send-approved-plan';
+
+  const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  let allPlans        = [];
+  let currentPlan     = null;
+  let workingPlan     = null;
+  let selectedPlanKey = null;
+  let savedPlans      = {};
+  let emailSent       = false;
+  let meetingCounter  = 0;
+
+  // holds the structured (non-JSON) edit state per plan key while a card is being edited
+  let editState = {};
+
+  // Change 1: holds the assessment_data JSON fetched via user_id for the plan currently open in the modal
+  let currentAssessmentData = null;
+
+  const plansBody       = document.getElementById('plansBody');
+  const countPill       = document.getElementById('countPill');
+  const searchInput     = document.getElementById('searchInput');
+  const refreshBtn      = document.getElementById('refreshBtn');
+  const overlay         = document.getElementById('overlay');
+  const closeBtn        = document.getElementById('closeBtn');
+  const cancelBtn       = document.getElementById('cancelBtn');
+  const modalTitle      = document.getElementById('modalTitle');
+  const modalPlanName   = document.getElementById('modalPlanName');
+  const vName           = document.getElementById('vName');
+  const vEmail          = document.getElementById('vEmail');
+  const vPhone          = document.getElementById('vPhone');
+  const vCalories       = document.getElementById('vCalories');
+  const vProtein        = document.getElementById('vProtein');
+  const vCarbs          = document.getElementById('vCarbs');
+  const vFat            = document.getElementById('vFat');
+  const assessmentGrid  = document.getElementById('assessmentGrid');
+  const assessmentToggle = document.getElementById('assessmentToggle');
+  const assessmentChevron = document.getElementById('assessmentChevron');
+  const assessmentPanel  = document.getElementById('assessmentPanel');
+  const planCardsGrid   = document.getElementById('planCardsGrid');
+  const supplementsDisp = document.getElementById('supplementsDisplay');
+  const notesDisp       = document.getElementById('notesDisplay');
+  const finalSection    = document.getElementById('finalApprovalSection');
+  const selectedPlanTag = document.getElementById('selectedPlanTag');
+  const doctorInput     = document.getElementById('doctorName');
+  const doctorValid     = document.getElementById('doctorValidation');
+  const finalApproveBtn = document.getElementById('finalApproveBtn');
+  const finalStatusMsg  = document.getElementById('finalStatusMsg');
+  const meetingsContainer = document.getElementById('meetingsContainer');
+
+  // Topbar date
+  (function setDate(){
+    const el = document.getElementById('topbarDate');
+    if(el) el.textContent = new Date().toLocaleDateString('en-GB',{weekday:'long',day:'2-digit',month:'long',year:'numeric'});
+  })();
+
+  // Page nav
+  document.querySelectorAll('.page-nav-tab').forEach(tab => {
+    tab.addEventListener('click', () => {
+      document.querySelectorAll('.page-nav-tab').forEach(t => t.classList.remove('active'));
+      document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active'));
+      tab.classList.add('active');
+      document.getElementById(tab.dataset.section).classList.add('active');
+      if(tab.dataset.section === 'section-meetings'){
+        loadUpcomingMeetings();
+        loadCompletedMeetings();
+      }
+    });
+  });
+
+  // Meeting tab switching
+  document.querySelectorAll('.tab-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+      document.querySelectorAll('.tab-panel').forEach(p => p.classList.remove('active'));
+      btn.classList.add('active');
+      document.getElementById(btn.dataset.tab).classList.add('active');
+    });
+  });
+
+  // Change 2: Patient Assessment collapse/expand toggle
+  assessmentToggle.addEventListener('click', () => {
+    const isOpen = assessmentPanel.classList.toggle('open');
+    assessmentToggle.setAttribute('aria-expanded', isOpen ? 'true' : 'false');
+    assessmentChevron.textContent = isOpen ? '▲' : '▼';
+  });
+
+  // Helpers
+  function escapeHtml(s){
+    return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  }
+  function formatDate(iso){
+    if(!iso) return '—';
+    const d = new Date(iso);
+    return isNaN(d)?'—':d.toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'});
+  }
+
+  // 12-hour AM/PM time format (display-only — storage/backend untouched).
+  // Meeting rows store "4:30 AM" / "5:45 PM" style text. Older rows stored
+  // as 24-hour "HH:MM" are still converted for display so existing records
+  // keep rendering correctly.
+  function formatTime(t){
+    if(!t) return '—';
+    const s = String(t).trim();
+    if(/AM|PM/i.test(s)) return s.replace(/\s+/g,' ').toUpperCase();
+    try{
+      const parts = s.split(':');
+      const h = parseInt(parts[0], 10);
+      const m = parseInt(parts[1], 10);
+      if(isNaN(h) || isNaN(m)) return t;
+      const period = h >= 12 ? 'PM' : 'AM';
+      let hour12 = h % 12;
+      if(hour12 === 0) hour12 = 12;
+      const hh = String(hour12).padStart(2,'0');
+      const mm = String(m).padStart(2,'0');
+      return `${hh}:${mm} ${period}`;
+    }catch{ return t; }
+  }
+
+  function showFinalStatus(msg,type){
+    finalStatusMsg.textContent = msg;
+    finalStatusMsg.className = `final-status-msg show ${type}`;
+  }
+  function clearFinalStatus(){
+    finalStatusMsg.className = 'final-status-msg';
+    finalStatusMsg.textContent = '';
+  }
+
+  /* ================================================================
+     CHANGE 1: Fetch the Patient Assessment using user_id ONLY
+     Queries the `assessment` table (not client name/email) and reads
+     the actual values out of the `assessment_data` JSON column.
+     Nutrition plan queries/logic are completely untouched.
+  ======================================currentAssessmentData = await fetchAssessmentByUserId(plan.user_id);========================== */
+async function fetchAssessmentById(assessmentId){
+
+  if(!assessmentId) return null;
+
+  try{
+
+    const { data, error } = await supabase
+      .from('assessments')
+      .select('assessment_data')
+      .eq('id', assessmentId)
+      .single();
+
+    console.log("Assessment ID:", assessmentId);
+    console.log("Assessment Result:", data);
+    console.log("Assessment Error:", error);
+
+    if(error){
+      console.error(error);
+      return null;
+    }
+
+    return data.assessment_data;
+
+  }catch(e){
+    console.error(e);
+    return null;
+  }
+}
+
+  // Turns a camelCase / snake_case JSON key into a readable label. Only
+  // used as a last-resort fallback when a field's raw value is itself a
+  // nested object we need to flatten for display (see
+  // formatAssessmentFieldValue below) — it is NOT used to build the
+  // assessment's section/field layout, which is fully explicit (see the
+  // ASSESSMENT_SECTIONS config further down).
+  function humanizeAssessmentKey(key){
+    const withSpaces = String(key)
+      .replace(/([a-z0-9])([A-Z])/g, '$1 $2')
+      .replace(/_/g, ' ');
+    return withSpaces.replace(/\b\w/g, c => c.toUpperCase()).trim();
+  }
+
+  // Formats a single assessment field value for display: comma-joined arrays,
+  // null (resolved to "Not Specified" by the caller) for empty string / empty
+  // array / null / undefined / empty object.
+  function formatAssessmentFieldValue(raw){
+    if(raw===undefined || raw===null) return null;
+    if(Array.isArray(raw)){
+      const cleaned = raw.filter(v=>v!==null && v!==undefined && String(v).trim()!=='');
+      if(cleaned.length===0) return null;
+      return cleaned.join(', ');
+    }
+    if(typeof raw==='string'){
+      const trimmed = raw.trim();
+      return trimmed==='' ? null : trimmed;
+    }
+    if(typeof raw==='boolean') return raw ? 'Yes' : 'No';
+    if(typeof raw==='object'){
+      const parts = Object.entries(raw)
+        .filter(([,v])=>v!==null && v!==undefined && String(v).trim()!=='')
+        .map(([k,v])=>`${humanizeAssessmentKey(k)}: ${Array.isArray(v)?v.join(', '):v}`);
+      if(parts.length===0) return null;
+      return parts.join(' · ');
+    }
+    return String(raw);
+  }
+
+  /* ================================================================
+     CHANGE — ASSESSMENT FIELD CONFIGURATION (explicit, fixed mapping)
+     ------------------------------------------------------------------
+     This is the ONLY thing that determines what gets shown and in what
+     order. Every section and every field inside it is hand-listed here,
+     in the same order as the Assessment Form. Rendering below walks
+     THIS array — it never loops over Object.keys() of the incoming
+     JSON, so the on-screen layout is always identical no matter what
+     order fields happen to be stored in the database.
+
+     If a value in Supabase is stored under a different key name than
+     assumed here, just add/edit the candidate key(s) for that one field
+     in the `keys` array — nothing else needs to change.
+  ================================================================ */
+  const ASSESSMENT_SECTIONS = [
+    {
+      title: 'Personal Information',
+      path: 'personalInfo',
+      fields: [
+        { label: 'Full Name',              keys: ['fullName','full_name','name'] },
+        { label: 'Email',                  keys: ['email'] },
+        { label: 'Contact Number',         keys: ['contactNumber','contact_number','phone','mobileNumber','mobile_number'] },
+        { label: 'Date of Birth',          keys: ['dateOfBirth','date_of_birth','dob'] },
+        { label: 'Blood Group',            keys: ['bloodGroup','blood_group'] },
+        { label: 'Nationality',            keys: ['nationality'] },
+        { label: 'Occupation',             keys: ['occupation'] },
+        { label: 'Height',                 keys: ['height'] },
+        { label: 'Weight',                 keys: ['weight'] },
+        { label: 'Goals',                  keys: ['goals','goal'] },
+        { label: 'Residential Address',    keys: ['residentialAddress','residential_address','address'] },
+        { label: 'Work / School Timings',  keys: ['workSchoolTimings','work_school_timings','workTimings'] },
+        { label: 'Additional Information', keys: ['additionalInformation','additional_information'] },
+      ]
+    },
+    {
+      title: 'Medical Conditions',
+      path: 'medicalConditions',
+      fields: [
+        { label: 'Existing Medical Conditions', keys: ['hasCondition','conditions','existingConditions'] },
+        { label: 'Condition Details',           keys: ['details','conditionDetails'] },
+        { label: 'Currently Under Treatment',   keys: ['underTreatment','currentlyUnderTreatment'] },
+        { label: 'Additional Information',      keys: ['notes','additionalInformation'] },
+      ]
+    },
+    {
+      title: 'Allergies',
+      path: 'allergies',
+      fields: [
+        { label: 'Known Allergies',        keys: ['hasAllergies','allergies','knownAllergies'] },
+        { label: 'Allergy Details',        keys: ['details','allergyDetails'] },
+        { label: 'Reaction Type',          keys: ['reactionType','reaction'] },
+        { label: 'Additional Information', keys: ['notes','additionalInformation'] },
+      ]
+    },
+    {
+      title: 'Family History',
+      path: 'familyHistory',
+      fields: [
+        { label: 'Family Medical History', keys: ['hasHistory','familyMedicalHistory','history'] },
+        { label: 'Condition Details',      keys: ['details','conditionDetails'] },
+        { label: 'Relation',               keys: ['relation'] },
+        { label: 'Additional Information', keys: ['notes','additionalInformation'] },
+      ]
+    },
+    {
+      title: 'Nutrition',
+      path: 'nutrition',
+      fields: [
+        { label: 'Diet Type',              keys: ['dietType','diet_type'] },
+        { label: 'Meals Per Day',          keys: ['mealsPerDay','meals_per_day'] },
+        { label: 'Water Intake',           keys: ['waterIntake','water_intake'] },
+        { label: 'Foods Enjoy',            keys: ['foodsEnjoy','foodsEnjoyed','favoriteFoods'] },
+        { label: 'Foods Avoided',          keys: ['foodsAvoided','dislikedFoods'] },
+        { label: 'Non-Veg Days Avoided',   keys: ['nonVegDaysAvoided','non_veg_days_avoided','nonVegDays'] },
+        { label: 'Current Supplements',    keys: ['currentSupplements','supplements'] },
+        { label: 'Alcohol Consumption',    keys: ['alcoholConsumption','alcohol'] },
+        { label: 'Smoking',                keys: ['smoking'] },
+        { label: 'Additional Information', keys: ['notes','additionalInformation'] },
+      ]
+    },
+    {
+      title: 'Training',
+      path: 'training',
+      fields: [
+        { label: 'Activity Level',         keys: ['activityLevel','activity_level'] },
+        { label: 'Workout Type',           keys: ['workoutType','workout_type'] },
+        { label: 'Workout Frequency',      keys: ['workoutFrequency','workout_frequency'] },
+        { label: 'Workout Duration',       keys: ['workoutDuration','workout_duration'] },
+        { label: 'Trainer Assistance',     keys: ['trainerAssistance','hasTrainer'] },
+        { label: 'Additional Information', keys: ['notes','additionalInformation'] },
+      ]
+    },
+    {
+      title: 'Dietary Recall',
+      path: 'dietaryRecall',
+      fields: [
+        { label: 'Breakfast',            keys: ['breakfast'] },
+        { label: 'Mid-Morning Snack',    keys: ['midMorningSnack','morningSnack'] },
+        { label: 'Lunch',                keys: ['lunch'] },
+        { label: 'Evening Snack',        keys: ['eveningSnack'] },
+        { label: 'Dinner',               keys: ['dinner'] },
+        { label: 'Bed Time',             keys: ['bedTime','bed_time'] },
+      ]
+    },
+    {
+      title: 'Medications',
+      path: 'medications',
+      fields: [
+        { label: 'Current Medications',    keys: ['currentMedications','medications'] },
+        { label: 'Dosage',                 keys: ['dosage'] },
+        { label: 'Duration',               keys: ['duration'] },
+        { label: 'Additional Information', keys: ['notes','additionalInformation'] },
+      ]
+    },
+    {
+      title: 'Injuries',
+      path: 'injuries',
+      fields: [
+        { label: 'Past Injuries',          keys: ['pastInjuries','past_injuries'] },
+        { label: 'Current Injuries',       keys: ['currentInjuries','current_injuries'] },
+        { label: 'Details',                keys: ['details'] },
+        { label: 'Additional Information', keys: ['notes','additionalInformation'] },
+      ]
+    },
+    {
+      title: 'Symptoms',
+      path: 'symptoms',
+      fields: [
+        { label: 'Current Symptoms',       keys: ['currentSymptoms','symptoms'] },
+        { label: 'Duration',               keys: ['duration'] },
+        { label: 'Severity',               keys: ['severity'] },
+        { label: 'Additional Information', keys: ['notes','additionalInformation'] },
+      ]
+    },
+  ];
+
+  // Reads a field's raw value from a section object by trying each
+  // candidate key in order (first defined value wins). Not a loop over
+  // the JSON's own keys — the candidates come from the fixed config above.
+  function getAssessmentFieldRaw(sectionObj, candidateKeys){
+    if(!sectionObj || typeof sectionObj !== 'object') return undefined;
+    for(const k of candidateKeys){
+      if(sectionObj[k] !== undefined) return sectionObj[k];
+    }
+    return undefined;
+  }
+
+  function renderAssessmentField(sectionObj, field){
+    const raw = getAssessmentFieldRaw(sectionObj, field.keys);
+    const formatted = formatAssessmentFieldValue(raw);
+    const isEmpty = formatted === null;
+    const display = isEmpty ? 'Not Specified' : formatted;
+    const wide = (typeof display === 'string' && display.length > 40) ? ' wide' : '';
+    return `<div class="assessment-item${wide}"><label>${escapeHtml(field.label)}</label><span${isEmpty ? ' class="not-specified"' : ''}>${escapeHtml(display)}</span></div>`;
+  }
+
+  /* ================================================================
+     PATIENT ASSESSMENT DISPLAY
+     Renders every section/field explicitly listed in
+     ASSESSMENT_SECTIONS, in that exact order, regardless of the order
+     fields appear in the stored JSON. Every field is always shown —
+     empty values render as "Not Specified" rather than being hidden.
+     Rendered inside the same collapsible panel — collapsed by default.
+  ================================================================ */
+  function renderAssessment(assessmentData){
+    const ad = assessmentData || {};
+    assessmentGrid.innerHTML = ASSESSMENT_SECTIONS.map((section, idx) => {
+      const sectionObj = ad[section.path] || {};
+      const fieldsHtml = section.fields.map(field => renderAssessmentField(sectionObj, field)).join('');
+      const labelStyle = idx === 0 ? 'margin-top:0; grid-column:1/-1;' : 'margin-top:20px; grid-column:1/-1;';
+      return `
+        <div class="section-label" style="${labelStyle}">${escapeHtml(section.title)}</div>
+        <div class="assessment-grid" style="grid-column:1/-1; margin-bottom:2px;">${fieldsHtml}</div>`;
+    }).join('');
+  }
+
+  const MEAL_ORDER = [
+    "06:00 AM On Waking Up","08:00 AM Breakfast","10:30 AM Morning Snack",
+    "01:00 PM Lunch","04:00 PM Pre Workout","06:00 PM Post Workout",
+    "08:00 PM Dinner","09:30 PM Bed Time"
+  ];
+
+  const MACRO_KEYS = new Set(['calories','total_calories','protein','total_protein','carbs','total_carbs','fat','total_fat','plan_name']);
+
+  function renderMealSchedule(planObj){
+    if(!planObj||typeof planObj!=='object'||Array.isArray(planObj)){
+      const text = typeof planObj==='string'?planObj:JSON.stringify(planObj,null,2);
+      return `<div class="meal-foods" style="white-space:pre-wrap;">${escapeHtml(text)}</div>`;
+    }
+    const keys = Object.keys(planObj);
+    const orderedKeys = [...MEAL_ORDER.filter(k=>keys.includes(k)), ...keys.filter(k=>!MEAL_ORDER.includes(k) && !MACRO_KEYS.has(k))];
+    const rows = orderedKeys.filter(k=>planObj[k]!==undefined).map(timeLabel=>{
+      const value = planObj[timeLabel];
+      let foodsHtml = '';
+      if(typeof value==='string'){
+        foodsHtml=`<div class="meal-foods">${escapeHtml(value)}</div>`;
+      }else if(Array.isArray(value)){
+        const items=value.map(item=>{
+          if(typeof item==='object'&&item!==null){
+            const name=item.food||item.name||item.item||'';
+            const details=[item.quantity,item.amount,item.calories?`${item.calories} kcal`:null,item.notes].filter(Boolean).join(' · ');
+            return `<li><strong>${escapeHtml(name)}</strong>${details?`<span class="food-item-detail"> — ${escapeHtml(details)}</span>`:''}</li>`;
+          }
+          return `<li>${escapeHtml(String(item))}</li>`;
+        }).join('');
+        foodsHtml=`<div class="meal-foods"><ul>${items}</ul></div>`;
+      }else if(typeof value==='object'&&value!==null){
+        const foods=value.foods||value.items||value.meal_items||null;
+        const desc=value.description||value.details||value.meal||null;
+        const cal=value.calories||value.total_calories||null;
+        if(foods&&Array.isArray(foods)){
+          const items=foods.map(f=>{
+            if(typeof f==='object'&&f!==null){
+              const name=f.food||f.name||f.item||JSON.stringify(f);
+              const det=[f.quantity,f.amount,f.calories?`${f.calories} kcal`:null].filter(Boolean).join(' · ');
+              return `<li><strong>${escapeHtml(name)}</strong>${det?`<span class="food-item-detail"> — ${escapeHtml(det)}</span>`:''}</li>`;
+            }
+            return `<li>${escapeHtml(String(f))}</li>`;
+          }).join('');
+          const calNote=cal?`<div style="font-size:11.5px;color:var(--ink-soft);margin-top:4px;">~${escapeHtml(String(cal))} kcal</div>`:'';
+          foodsHtml=`<div class="meal-foods"><ul>${items}</ul>${calNote}</div>`;
+        }else if(desc){
+          const calNote=cal?` <span style="color:var(--ink-soft);font-size:12px;">(~${escapeHtml(String(cal))} kcal)</span>`:'';
+          foodsHtml=`<div class="meal-foods">${escapeHtml(String(desc))}${calNote}</div>`;
+        }else{
+          const parts=Object.entries(value).map(([k,v])=>`<li><strong>${escapeHtml(k)}:</strong> ${escapeHtml(typeof v==='object'?JSON.stringify(v):String(v))}</li>`).join('');
+          foodsHtml=`<div class="meal-foods"><ul>${parts}</ul></div>`;
+        }
+      }else{
+        foodsHtml=`<div class="meal-foods">${escapeHtml(String(value))}</div>`;
+      }
+      return `<div class="meal-row"><div class="meal-time">${escapeHtml(timeLabel)}</div>${foodsHtml}</div>`;
+    }).join('');
+    return `<div class="meal-schedule">${rows}</div>`;
+  }
+
+  function renderSupplements(supps){
+    if(!supps||(Array.isArray(supps)&&supps.length===0)){
+      return `<p style="color:var(--ink-soft);font-family:var(--sans);font-size:13.5px;">No supplements specified.</p>`;
+    }
+    if(typeof supps==='string') return `<div class="notes-box">${escapeHtml(supps)}</div>`;
+    if(Array.isArray(supps)){
+      const items=supps.map(item=>{
+        if(typeof item==='object'&&item!==null){
+          const name=item.name||item.supplement||item.item||'';
+          const dose=item.dosage||item.dose||item.amount||'';
+          const timing=item.timing||item.time||item.when||'';
+          const notes=item.notes||item.note||'';
+          const details=[dose,timing,notes].filter(Boolean).join(' · ');
+          return `<div class="supplement-item"><div class="supplement-dot"></div><div><div class="supplement-name">${escapeHtml(name||JSON.stringify(item))}</div>${details?`<div class="supplement-detail">${escapeHtml(details)}</div>`:''}</div></div>`;
+        }
+        return `<div class="supplement-item"><div class="supplement-dot"></div><div>${escapeHtml(String(item))}</div></div>`;
+      }).join('');
+      return `<div class="supplement-list">${items}</div>`;
+    }
+    if(typeof supps==='object'){
+      const items=Object.entries(supps).map(([k,v])=>`<div class="supplement-item"><div class="supplement-dot"></div><div><div class="supplement-name">${escapeHtml(k)}</div><div class="supplement-detail">${escapeHtml(typeof v==='object'?JSON.stringify(v):String(v))}</div></div></div>`).join('');
+      return `<div class="supplement-list">${items}</div>`;
+    }
+    return `<div class="notes-box">${escapeHtml(String(supps))}</div>`;
+  }
+
+  function renderNotes(notes){
+    if(!notes) return `<p style="color:var(--ink-soft);font-family:var(--sans);font-size:13.5px;">No notes.</p>`;
+    if(typeof notes==='string') return `<div class="notes-box">${escapeHtml(notes).replace(/\n/g,'<br>')}</div>`;
+    return `<div class="notes-box">${escapeHtml(JSON.stringify(notes,null,2))}</div>`;
+  }
+
+  function extractPlanMacros(planObj,gp,suffix){
+    const cal  = planObj?.calories||planObj?.total_calories||gp[`total_calories_${suffix}`]||gp.total_calories||'—';
+    const prot = planObj?.protein ||planObj?.total_protein ||gp[`total_protein_${suffix}`] ||gp.total_protein ||'—';
+    const carb = planObj?.carbs   ||planObj?.total_carbs   ||gp[`total_carbs_${suffix}`]   ||gp.total_carbs   ||'—';
+    const fat  = planObj?.fat     ||planObj?.total_fat     ||gp[`total_fat_${suffix}`]     ||gp.total_fat     ||'—';
+    return {cal,prot,carb,fat};
+  }
+
+  function buildPlanCard(planKey,label,tagClass,gp,disabled){
+    const planObj = gp[planKey]||{};
+    const suffix  = planKey.replace('plan_','');
+    const {cal,prot,carb,fat} = extractPlanMacros(planObj,gp,suffix);
+    let mealsObj = {};
+    if(typeof planObj==='object'&&!Array.isArray(planObj)){
+      Object.entries(planObj).forEach(([k,v])=>{ if(!MACRO_KEYS.has(k)) mealsObj[k]=v; });
+    }
+    const mealHtml = Object.keys(mealsObj).length>0 ? renderMealSchedule(mealsObj)
+      : `<p style="color:var(--ink-soft);font-size:13.5px;font-family:var(--sans);">No meal data available.</p>`;
+    const cardId=`card-${planKey}`,editId=`edit-${planKey}`,saveId=`save-${planKey}`,approvId=`approve-${planKey}`,statusId=`status-${planKey}`;
+    return `
+    <div class="plan-card" id="${cardId}">
+      <div class="plan-card-header">
+        <div class="plan-card-title">
+          <span class="plan-tag ${tagClass}">${label}</span>
+          ${gp[planKey]?.plan_name?`<span style="font-size:12px;color:var(--ink-soft);font-family:var(--sans);">${escapeHtml(gp[planKey].plan_name)}</span>`:''}
+        </div>
+        <div id="badge-${planKey}"></div>
+      </div>
+      <div class="plan-card-macros">
+        <div class="macro-box"><label>Calories</label><span>${escapeHtml(String(cal))}</span></div>
+        <div class="macro-box"><label>Protein</label><span>${escapeHtml(String(prot))}</span></div>
+        <div class="macro-box"><label>Carbs</label><span>${escapeHtml(String(carb))}</span></div>
+        <div class="macro-box"><label>Fat</label><span>${escapeHtml(String(fat))}</span></div>
+      </div>
+      <div class="plan-card-body">
+        <div id="${editId}" data-plan-key="${planKey}" data-mode="view">${mealHtml}</div>
+      </div>
+      <div class="plan-card-actions">
+        <button class="edit-toggle-btn" data-plan-key="${planKey}">✏ Edit</button>
+        <button class="save-plan-btn" id="${saveId}" data-plan-key="${planKey}">Save Changes</button>
+        <span class="plan-save-status" id="${statusId}"></span>
+        <button class="approve-plan-btn" id="${approvId}" data-plan-key="${planKey}" ${disabled?'disabled':''}>Approve ${label}</button>
+      </div>
+    </div>`;
+  }
+
+  function populateModal(){
+    const gp = workingPlan||{};
+    modalTitle.textContent    = currentPlan.full_name||gp.client_name||'Client';
+    modalPlanName.textContent = gp.plan_name||'';
+    vName.textContent         = currentPlan.full_name||gp.client_name||'—';
+    vEmail.textContent        = currentPlan.email||'—';
+    vPhone.textContent        = currentPlan.mobile_number||'—';
+    vCalories.textContent     = gp.total_calories||gp.calories||'—';
+    vProtein.textContent      = gp.total_protein ||gp.protein ||'—';
+    vCarbs.textContent        = gp.total_carbs   ||gp.carbs   ||'—';
+    vFat.textContent          = gp.total_fat     ||gp.fat     ||'—';
+
+    renderAssessment(currentAssessmentData);
+    // Collapsed by default every time the modal opens
+    assessmentPanel.classList.remove('open');
+    assessmentToggle.setAttribute('aria-expanded','false');
+    assessmentChevron.textContent = '▼';
+
+    const planDefs=[
+      {key:'plan_a',label:'Plan A',tagClass:'plan-tag-a'},
+      {key:'plan_b',label:'Plan B',tagClass:'plan-tag-b'},
+      {key:'plan_c',label:'Plan C',tagClass:'plan-tag-c'},
+    ];
+    const isApproved = currentPlan.approval_status==='approved';
+    planCardsGrid.innerHTML = planDefs.map(({key,label,tagClass})=>buildPlanCard(key,label,tagClass,gp,isApproved)).join('');
+    supplementsDisp.innerHTML = renderSupplements(gp.supplements);
+    notesDisp.innerHTML       = renderNotes(gp.nutritionist_notes);
+    editState = {};
+    wireCardButtons();
+    resetMeetingScheduler();
+
+    if(isApproved&&currentPlan.approved_by){
+      const fp = currentPlan.final_plan;
+      let approvedKey = null;
+      if(fp){ approvedKey = guessApprovedKey(fp,gp); }
+      if(approvedKey) markPlanSelected(approvedKey,false);
+      doctorInput.value = currentPlan.approved_by||'';
+      showFinalSection(approvedKey||'plan_a');
+      finalApproveBtn.disabled = true;
+      showFinalStatus('Plan approved and email previously sent.','ok');
+      emailSent = true;
+    }else{
+      finalSection.style.display='none';
+      emailSent=false;
+      selectedPlanKey=null;
+    }
+  }
+
+  function guessApprovedKey(finalPlan,gp){
+    for(const key of ['plan_a','plan_b','plan_c']){
+      if(JSON.stringify(finalPlan)===JSON.stringify(gp[key])) return key;
+    }
+    for(const key of ['plan_a','plan_b','plan_c']){
+      if(savedPlans[key]&&JSON.stringify(finalPlan)===JSON.stringify(savedPlans[key])) return key;
+    }
+    return null;
+  }
+
+  /* ================================================================
+     EDIT PLANS DIRECTLY (no raw JSON)
+     Normalizes each meal's food data into {food, quantity} rows the
+     doctor can edit, add to, or remove from. On save, the structured
+     rows are converted back into the plan object and written through
+     the exact same save call used previously.
+  ================================================================ */
+  function normalizeMealItems(value){
+    if(value===null || value===undefined) return [];
+    if(typeof value==='string'){
+      return value.trim()===''? [] : [{food:value, quantity:''}];
+    }
+    if(Array.isArray(value)){
+      return value.map(item=>{
+        if(typeof item==='object'&&item!==null){
+          const food = item.food||item.name||item.item||'';
+          const quantity = item.quantity||item.amount||'';
+          return {food:String(food), quantity:String(quantity)};
+        }
+        return {food:String(item), quantity:''};
+      });
+    }
+    if(typeof value==='object'){
+      const foods = value.foods||value.items||value.meal_items||null;
+      if(foods && Array.isArray(foods)) return normalizeMealItems(foods);
+      const desc = value.description||value.details||value.meal||null;
+      if(desc){
+        return [{food:String(desc), quantity: value.calories?`${value.calories} kcal`:''}];
+      }
+      return Object.entries(value).map(([k,v])=>({
+        food:`${k}: ${typeof v==='object'?JSON.stringify(v):v}`, quantity:''
+      }));
+    }
+    return [{food:String(value), quantity:''}];
+  }
+
+  function buildEditState(planObj){
+    const meals = {};
+    const order = [];
+    const extra = {};
+    if(planObj && typeof planObj==='object' && !Array.isArray(planObj)){
+      const keys = Object.keys(planObj);
+      const orderedKeys = [...MEAL_ORDER.filter(k=>keys.includes(k)), ...keys.filter(k=>!MEAL_ORDER.includes(k) && !MACRO_KEYS.has(k))];
+      orderedKeys.forEach(k=>{
+        meals[k] = normalizeMealItems(planObj[k]);
+        order.push(k);
+      });
+      keys.filter(k=>MACRO_KEYS.has(k)).forEach(k=>{ extra[k]=planObj[k]; });
+    } else {
+      order.push('Plan');
+      meals['Plan'] = normalizeMealItems(planObj);
+    }
+    return {meals, order, extra};
+  }
+
+  function renderEditableArea(planKey){
+    const state = editState[planKey];
+    const container = document.getElementById(`edit-${planKey}`);
+    const html = state.order.map(timeLabel=>{
+      const items = state.meals[timeLabel];
+      const itemsHtml = items.map((it,idx)=>`
+        <div class="edit-food-row">
+          <input type="text" class="edit-food-name" data-plan-key="${planKey}" data-meal="${escapeHtml(timeLabel)}" data-idx="${idx}" value="${escapeHtml(it.food)}" placeholder="Food name">
+          <input type="text" class="edit-food-qty" data-plan-key="${planKey}" data-meal="${escapeHtml(timeLabel)}" data-idx="${idx}" value="${escapeHtml(it.quantity)}" placeholder="Quantity">
+          <button type="button" class="remove-food-btn" data-plan-key="${planKey}" data-meal="${escapeHtml(timeLabel)}" data-idx="${idx}" aria-label="Remove item">✕</button>
+        </div>`).join('');
+      return `
+        <div class="edit-meal-row">
+          <div class="meal-time">${escapeHtml(timeLabel)}</div>
+          <div class="edit-food-body">
+            <div class="edit-food-list">${itemsHtml || '<p class="no-items-msg">No items — add one below.</p>'}</div>
+            <button type="button" class="add-food-btn" data-plan-key="${planKey}" data-meal="${escapeHtml(timeLabel)}">+ Add Food Item</button>
+          </div>
+        </div>`;
+    }).join('');
+    container.innerHTML = `<div class="edit-meal-schedule">${html}</div>`;
+    wireEditableEvents(planKey);
+  }
+
+  function wireEditableEvents(planKey){
+    const container = document.getElementById(`edit-${planKey}`);
+    container.querySelectorAll('.edit-food-name, .edit-food-qty').forEach(input=>{
+      input.addEventListener('input', (e)=>{
+        const meal = e.target.dataset.meal, idx = +e.target.dataset.idx;
+        const field = e.target.classList.contains('edit-food-name') ? 'food' : 'quantity';
+        if(editState[planKey] && editState[planKey].meals[meal] && editState[planKey].meals[meal][idx]){
+          editState[planKey].meals[meal][idx][field] = e.target.value;
+        }
+      });
+    });
+    container.querySelectorAll('.add-food-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const meal = btn.dataset.meal;
+        editState[planKey].meals[meal].push({food:'', quantity:''});
+        renderEditableArea(planKey);
+      });
+    });
+    container.querySelectorAll('.remove-food-btn').forEach(btn=>{
+      btn.addEventListener('click', ()=>{
+        const meal = btn.dataset.meal, idx = +btn.dataset.idx;
+        editState[planKey].meals[meal].splice(idx,1);
+        renderEditableArea(planKey);
+      });
+    });
+  }
+
+  function showViewMode(planKey, planObj){
+    const container = document.getElementById(`edit-${planKey}`);
+    let mealsObj = {};
+    if(planObj && typeof planObj==='object' && !Array.isArray(planObj)){
+      Object.entries(planObj).forEach(([k,v])=>{ if(!MACRO_KEYS.has(k)) mealsObj[k]=v; });
+    }
+    container.dataset.mode='view';
+    container.innerHTML = Object.keys(mealsObj).length>0 ? renderMealSchedule(mealsObj)
+      : `<p style="color:var(--ink-soft);font-size:13.5px;font-family:var(--sans);">No meal data available.</p>`;
+  }
+
+  function wireCardButtons(){
+    planCardsGrid.querySelectorAll('.edit-toggle-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>{
+        const planKey = btn.dataset.planKey;
+        const container = document.getElementById(`edit-${planKey}`);
+        const saveBtn = document.getElementById(`save-${planKey}`);
+        const isEditing = container.dataset.mode === 'edit';
+        const gp = workingPlan||{};
+        const planObj = savedPlans[planKey] !== undefined ? savedPlans[planKey] : (gp[planKey]||{});
+
+        if(!isEditing){
+          editState[planKey] = buildEditState(planObj);
+          container.dataset.mode='edit';
+          renderEditableArea(planKey);
+          saveBtn.style.display='inline-block';
+          btn.textContent='✕ Cancel Edit';
+        }else{
+          showViewMode(planKey, planObj);
+          saveBtn.style.display='none';
+          btn.textContent='✏ Edit';
+          delete editState[planKey];
+        }
+      });
+    });
+    planCardsGrid.querySelectorAll('.save-plan-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>savePlanCard(btn.dataset.planKey));
+    });
+    planCardsGrid.querySelectorAll('.approve-plan-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>selectPlan(btn.dataset.planKey));
+    });
+  }
+
+  async function savePlanCard(planKey){
+    const saveBtn=document.getElementById(`save-${planKey}`);
+    const statusEl=document.getElementById(`status-${planKey}`);
+    const editBtn = planCardsGrid.querySelector(`.edit-toggle-btn[data-plan-key="${planKey}"]`);
+    saveBtn.disabled=true;saveBtn.textContent='Saving…';
+
+    const state = editState[planKey];
+    const gp = workingPlan||{};
+    const originalPlan = savedPlans[planKey] !== undefined ? savedPlans[planKey] : (gp[planKey]||{});
+
+    let editedPlanData;
+    if(state){
+      editedPlanData = {...state.extra};
+      state.order.forEach(timeLabel=>{
+        const items = (state.meals[timeLabel]||[]).filter(it=>it.food && it.food.trim()!=='');
+        editedPlanData[timeLabel] = items.map(it=>({food: it.food.trim(), quantity: (it.quantity||'').trim()}));
+      });
+    } else {
+      editedPlanData = originalPlan;
+    }
+
+    savedPlans[planKey]=editedPlanData;
+    const mergedFinal={...(currentPlan.final_plan||{}),[planKey]:editedPlanData};
+    // Existing save/update call — unchanged
+    const {error}=await supabase.from('nutrition_plans').update({final_plan:mergedFinal}).eq('id',currentPlan.id);
+    saveBtn.disabled=false;saveBtn.textContent='Save Changes';
+    if(error){
+      statusEl.textContent='✕ Save failed';statusEl.className='plan-save-status show err';
+    }else{
+      statusEl.textContent='✓ Saved';statusEl.className='plan-save-status show ok';
+      currentPlan.final_plan=mergedFinal;
+      gp[planKey]=editedPlanData;
+      showViewMode(planKey, editedPlanData);
+      saveBtn.style.display='none';
+      if(editBtn) editBtn.textContent='✏ Edit';
+      delete editState[planKey];
+      setTimeout(()=>{statusEl.className='plan-save-status';statusEl.textContent='';},4000);
+    }
+  }
+
+  function selectPlan(planKey){
+    selectedPlanKey=planKey;
+    markPlanSelected(planKey,true);
+    showFinalSection(planKey);
+  }
+  function markPlanSelected(planKey,animate){
+    ['plan_a','plan_b','plan_c'].forEach(key=>{
+      const card=document.getElementById(`card-${key}`);
+      const appBtn=document.getElementById(`approve-${key}`);
+      const badge=document.getElementById(`badge-${key}`);
+      if(!card) return;
+      if(key===planKey){
+        card.classList.add('selected');card.classList.remove('disabled-card');
+        if(appBtn){appBtn.disabled=true;appBtn.textContent='✓ Selected';}
+        if(badge){badge.innerHTML=`<span class="plan-selected-badge">Selected</span>`;}
+      }else{
+        card.classList.remove('selected');card.classList.add('disabled-card');
+        if(appBtn)appBtn.disabled=true;
+        if(badge)badge.innerHTML='';
+      }
+    });
+  }
+  function showFinalSection(planKey){
+    const labels={plan_a:'Plan A',plan_b:'Plan B',plan_c:'Plan C'};
+    const label=labels[planKey]||planKey;
+    selectedPlanTag.innerHTML=`<div class="selected-plan-tag">✓ ${escapeHtml(label)} Selected for Approval</div>`;
+    finalSection.style.display='block';
+    finalSection.scrollIntoView({behavior:'smooth',block:'nearest'});
+  }
+
+  /* ================================================================
+     MEETING TIME — dropdown picker (Hour / Minute / AM-PM)
+     ------------------------------------------------------------------
+     Replaces the old free-text "type digits" box. That box masked
+     input into a 00:00 shape as you typed, which is why typing a
+     single digit like "5" looked like the time had "disappeared" —
+     there was no visual cue that a second digit (e.g. "05") was still
+     expected. Three explicit dropdowns remove that ambiguity entirely:
+     the doctor picks Hour (01–12), Minute (00–55 in 5-minute steps),
+     and AM/PM — there is nothing to type incorrectly.
+
+     collectMeetingData() still combines the three selections into the
+     exact same "H:MM AM/PM" style string that was stored before, so
+     the database schema, n8n payload, and reminder/email logic are
+     completely unaffected.
+  ================================================================ */
+  function buildHourOptions(){
+    let opts = '';
+    for(let h=1; h<=12; h++){
+      const v = String(h).padStart(2,'0');
+      opts += `<option value="${v}"${h===12?' selected':''}>${v}</option>`;
+    }
+    return opts;
+  }
+  function buildMinuteOptions(){
+    let opts = '';
+    for(let m=0; m<60; m+=5){
+      const v = String(m).padStart(2,'0');
+      opts += `<option value="${v}"${m===0?' selected':''}>${v}</option>`;
+    }
+    return opts;
+  }
+
+  /* ================================================================
+     MEETING SCHEDULER
+     Same fields/ids/data flow as before — only the time input UI
+     has changed. Everything else is unchanged.
+  ================================================================ */
+  function resetMeetingScheduler(){
+    meetingCounter = 0;
+    meetingsContainer.innerHTML = '';
+    addMeeting();
+  }
+
+  window.addMeeting = function(){
+    meetingCounter++;
+    const id = meetingCounter;
+    const block = document.createElement('div');
+    block.className = 'meeting-row-block';
+    block.id = `meeting-block-${id}`;
+    block.innerHTML = `
+      <div class="meeting-row-title">
+        <span>Meeting ${id}</span>
+        <button class="remove-meeting-btn" onclick="removeMeeting(${id})">Remove</button>
+      </div>
+      <div class="meeting-fields">
+        <div class="form-row">
+          <label>Meeting Date</label>
+          <input type="date" id="meeting-date-${id}">
+        </div>
+        <div class="form-row">
+          <label>Meeting Time</label>
+          <div class="time-picker">
+            <select class="tp-hour" id="meeting-hour-${id}">${buildHourOptions()}</select>
+            <span class="time-sep">:</span>
+            <select class="tp-minute" id="meeting-minute-${id}">${buildMinuteOptions()}</select>
+            <select class="tp-ampm" id="meeting-ampm-${id}">
+              <option value="AM">AM</option>
+              <option value="PM">PM</option>
+            </select>
+          </div>
+        </div>
+        <div class="form-row">
+          <label>Google Meet Link</label>
+          <input type="url" id="meeting-link-${id}" placeholder="https://meet.google.com/…">
+        </div>
+      </div>`;
+    meetingsContainer.appendChild(block);
+  };
+
+  window.removeMeeting = function(id){
+    const block = document.getElementById(`meeting-block-${id}`);
+    if(block) block.remove();
+    if(meetingsContainer.children.length === 0) addMeeting();
+  };
+
+  function collectMeetingData(){
+    const meetings = [];
+    meetingsContainer.querySelectorAll('.meeting-row-block').forEach(block=>{
+      const idMatch = block.id.match(/meeting-block-(\d+)/);
+      if(!idMatch) return;
+      const i = idMatch[1];
+      const date = document.getElementById(`meeting-date-${i}`)?.value||'';
+      const hourVal  = document.getElementById(`meeting-hour-${i}`)?.value||'';
+      const minVal   = document.getElementById(`meeting-minute-${i}`)?.value||'';
+      const ampmVal  = document.getElementById(`meeting-ampm-${i}`)?.value||'AM';
+      const time = (hourVal && minVal) ? `${hourVal}:${minVal} ${ampmVal}` : '';
+      const link = document.getElementById(`meeting-link-${i}`)?.value||'';
+      if(date||time||link){
+        meetings.push({ meeting_date: date, meeting_time: time, meet_link: link });
+      }
+    });
+    return meetings;
+  }
+
+  function appendMeetingDataToPayload(payload){
+    payload.plan_duration_days = parseInt(document.getElementById('planDurationDays')?.value||'0')||null;
+    payload.meetings = collectMeetingData();
+    return payload;
+  }
+
+  /* ================================================================
+     FINAL APPROVAL — unchanged logic
+  ================================================================ */
+  finalApproveBtn.addEventListener('click',async()=>{
+    if(emailSent) return;
+    clearFinalStatus();
+    const doctorName=doctorInput.value.trim();
+    if(!doctorName){
+      doctorInput.classList.add('invalid');
+      doctorValid.classList.add('show');
+      doctorInput.focus();
+      return;
+    }
+    doctorInput.classList.remove('invalid');
+    doctorValid.classList.remove('show');
+    if(!selectedPlanKey){
+      showFinalStatus('No plan selected. Please click "Approve Plan" on one of the plan cards.','err');
+      return;
+    }
+    finalApproveBtn.disabled=true;
+    finalApproveBtn.textContent='Processing…';
+    const gp=workingPlan||{};
+    const approvedPlanData=savedPlans[selectedPlanKey]||gp[selectedPlanKey]||{};
+    const approvedAt=new Date().toISOString();
+    const {error:dbError}=await supabase
+      .from('nutrition_plans')
+      .update({approval_status:'approved',approved_by:doctorName,approved_at:approvedAt,final_plan:approvedPlanData})
+      .eq('id',currentPlan.id);
+    if(dbError){
+      finalApproveBtn.disabled=false;
+      finalApproveBtn.textContent='Final Approval & Send Email';
+      showFinalStatus('Database update failed: '+dbError.message,'err');
+      return;
+    }
+    currentPlan.approval_status='approved';
+    currentPlan.approved_by=doctorName;
+    currentPlan.approved_at=approvedAt;
+    currentPlan.final_plan=approvedPlanData;
+    showFinalStatus('Plan approved. Sending email to client…','info');
+
+    let payload = {
+  plan_id: currentPlan.id,
+  assessment_id: currentPlan.assessment_id,
+
+  user_id: currentPlan.user_id,
+  client_name: currentPlan.full_name || gp.client_name || '',
+  email: currentPlan.email || '',
+
+  doctor_name: doctorName,
+
+  approved_plan: approvedPlanData,
+  selected_plan: selectedPlanKey,
+
+  total_calories: gp.total_calories || '',
+  total_carbs: gp.total_carbs || '',
+  total_protein: gp.total_protein || '',
+  total_fat: gp.total_fat || '',
+
+  supplements: gp.supplements || [],
+  nutritionist_notes: gp.nutritionist_notes || '',
+
+  plan_duration_days: planDurationDays,
+  meetings: collectMeetingData()
+};
+    payload = appendMeetingDataToPayload(payload);
+
+    const sent = await sendToN8N(payload);
+
+    finalApproveBtn.textContent='Final Approval & Send Email';
+    if(sent){
+      emailSent=true;
+      finalApproveBtn.disabled=true;
+      showFinalStatus('✓ Plan approved and email successfully sent. No further action needed.','ok');
+    }else{
+      finalApproveBtn.disabled=false;
+      showFinalStatus('Plan approved in database, but the email could not be sent. Check the n8n webhook and retry.','err');
+    }
+    loadPlans();
+  });
+
+  async function sendToN8N(payload){
+    try{
+      const r=await fetch(N8N_WEBHOOK,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(payload)});
+      return r.ok;
+    }catch(e){ console.error('n8n webhook error:',e); return false; }
+  }
+
+  /* ================================================================
+     MODAL OPEN / CLOSE
+     Assessment is fetched separately via user_id from the
+     `assessment` table (assessment_data column) instead of being
+     read off the nutrition plan / generated_plan object.
+  ================================================================ */
+  async function viewPlan(id){
+    clearFinalStatus();
+    doctorInput.classList.remove('invalid');
+    doctorValid.classList.remove('show');
+    doctorInput.value='';
+    selectedPlanKey=null;
+    savedPlans={};
+    emailSent=false;
+    editState={};
+    currentAssessmentData=null;
+    const {data,error}=await supabase.from('nutrition_plans').select('*').eq('id',id).single();
+    if(error||!data){ alert('Could not load this plan: '+(error?.message||'not found')); return; }
+    currentPlan=data;
+    workingPlan=JSON.parse(JSON.stringify(data.generated_plan||{}));
+    const fp=data.final_plan;
+    if(fp&&typeof fp==='object'){
+      ['plan_a','plan_b','plan_c'].forEach(key=>{if(fp[key])savedPlans[key]=fp[key];});
+    }
+    // Fetch assessment via user_id (not name/email)
+   currentAssessmentData = await fetchAssessmentById(currentPlan.assessment_id);
+    populateModal();
+    overlay.classList.add('open');
+    document.body.style.overflow='hidden';
+  }
+  function closeModal(){
+    overlay.classList.remove('open');
+    document.body.style.overflow='';
+    currentPlan=null;workingPlan=null;selectedPlanKey=null;savedPlans={};emailSent=false;editState={};currentAssessmentData=null;
+  }
+  closeBtn.addEventListener('click',closeModal);
+  cancelBtn.addEventListener('click',closeModal);
+  overlay.addEventListener('click',e=>{ if(e.target===overlay) closeModal(); });
+  document.addEventListener('keydown',e=>{ if(e.key==='Escape'&&overlay.classList.contains('open')) closeModal(); });
+
+  /* ================================================================
+     LOAD PLANS TABLE — unchanged data/query logic
+  ================================================================ */
+  async function loadPlans(){
+    plansBody.innerHTML=`<tr><td colspan="7"><div class="loading-state"><strong>Loading plans…</strong>Fetching records from Supabase.</div></td></tr>`;
+    const {data,error}=await supabase.from('nutrition_plans').select('*').order('created_at',{ascending:false});
+    if(error){
+      plansBody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><strong>Could not load plans</strong>${escapeHtml(error.message)}</div></td></tr>`;
+      countPill.textContent=''; return;
+    }
+    allPlans=data||[];
+    renderTable(allPlans);
+  }
+  function renderTable(plans){
+    if(!plans.length){
+      plansBody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><strong>No plans yet</strong>Submitted assessments will appear here once a plan is generated.</div></td></tr>`;
+      countPill.textContent='0 records'; return;
+    }
+    countPill.textContent=`${plans.length} record${plans.length===1?'':'s'}`;
+    plansBody.innerHTML=plans.map(plan=>{
+      const gp=plan.generated_plan||{};
+      const status=(plan.approval_status||'pending').toLowerCase();
+      const badgeCls=status==='approved'?'badge-approved':'badge-pending';
+      return `
+        <tr>
+          <td data-label="Client"><span class="cell-name">${escapeHtml(plan.full_name||gp.client_name||'—')}</span></td>
+          <td data-label="Email"><span class="cell-sub">${escapeHtml(plan.email||'—')}</span></td>
+          <td data-label="Phone"><span class="cell-sub">${escapeHtml(plan.mobile_number||'—')}</span></td>
+          <td data-label="Status"><span class="badge ${badgeCls}">${escapeHtml(status)}</span></td>
+          <td data-label="Reviewed By"><span class="cell-sub">${escapeHtml(plan.approved_by||'—')}</span></td>
+          <td data-label="Created"><span class="cell-sub">${formatDate(plan.created_at)}</span></td>
+          <td><button class="view-btn" data-id="${plan.id}">View</button></td>
+        </tr>`;
+    }).join('');
+    plansBody.querySelectorAll('.view-btn').forEach(btn=>{
+      btn.addEventListener('click',()=>viewPlan(btn.dataset.id));
+    });
+  }
+
+  searchInput.addEventListener('input',()=>{
+    const q=searchInput.value.trim().toLowerCase();
+    if(!q){ renderTable(allPlans); return; }
+    const filtered=allPlans.filter(plan=>{
+      const gp=plan.generated_plan||{};
+      return [plan.full_name,gp.client_name,plan.email,plan.mobile_number,gp.plan_name].join(' ').toLowerCase().includes(q);
+    });
+    renderTable(filtered);
+  });
+  refreshBtn.addEventListener('click',loadPlans);
+
+  /* ================================================================
+     LOAD UPCOMING MEETINGS — unchanged query
+  ================================================================ */
+  async function loadUpcomingMeetings(){
+    document.getElementById('upcomingBody').innerHTML=
+      `<tr><td colspan="7"><div class="loading-state"><strong>Loading…</strong>Fetching upcoming meetings.</div></td></tr>`;
+    try{
+      const { data, error } = await supabase
+  .from('meetings')
+  .select('*')
+  .eq('completed', false)
+  .order('meeting_date', { ascending: true });
+
+
+       
+      if(error) throw error;
+      renderUpcomingMeetingTable(data||[]);
+      refreshMeetingStatistics();
+    }catch(e){
+      document.getElementById('upcomingBody').innerHTML=
+        `<tr><td colspan="7"><div class="empty-state"><strong>Could not load meetings</strong><br>${escapeHtml(e.message)}</div></td></tr>`;
+    }
+  }
+
+  /* ================================================================
+     LOAD COMPLETED MEETINGS — unchanged query
+  ================================================================ */
+  async function loadCompletedMeetings() {
+  document.getElementById('completedBody').innerHTML =
+    `<tr><td colspan="6"><div class="loading-state"><strong>Loading…</strong>Fetching completed meetings.</div></td></tr>`;
+
+  try {
+    const { data, error } = await supabase
+      .from('meetings')
+      .select('*')
+      .eq('completed', true)
+      .order('completed_date', { ascending: false });
+
+    if (error) throw error;
+
+    renderCompletedMeetingTable(data || []);
+  } catch (e) {
+    document.getElementById('completedBody').innerHTML =
+      `<tr><td colspan="6"><div class="empty-state"><strong>Could not load meetings</strong><br>${escapeHtml(e.message)}</div></td></tr>`;
+  }
+}
+
+  /* ================================================================
+     RENDER UPCOMING MEETING TABLE
+     (meeting time shown via formatTime())
+  ================================================================ */
+  function renderUpcomingMeetingTable(meetings){
+    const tbody=document.getElementById('upcomingBody');
+    if(!meetings.length){
+      tbody.innerHTML=`<tr><td colspan="7"><div class="empty-state"><strong>No Upcoming Meetings</strong>Schedule meetings when approving a nutrition plan.</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML=meetings.map(m=>{
+      const clientName = m.client_name || '—';
+      const meetLink   = m.meet_link||'';
+      const joinBtn    = meetLink
+        ? `<a href="${escapeHtml(meetLink)}" target="_blank" rel="noopener noreferrer" class="join-btn">Join Meeting</a>`
+        : `<span style="color:var(--ink-soft);font-family:var(--mono);font-size:11px;">No link</span>`;
+      return `
+        <tr>
+          <td><span class="cell-name">${escapeHtml(clientName)}</span></td>
+          <td><span class="cell-sub">${escapeHtml(m.doctor_name||'—')}</span></td>
+          <td><span class="cell-mono">${formatDate(m.meeting_date)}</span></td>
+          <td><span class="cell-mono">${formatTime(m.meeting_time)}</span></td>
+          <td>${joinBtn}</td>
+          <td><span class="badge badge-scheduled">Scheduled</span></td>
+          <td><button class="complete-btn" onclick="markMeetingCompleted('${escapeHtml(String(m.id))}')">Complete</button></td>
+        </tr>`;
+    }).join('');
+  }
+
+  /* ================================================================
+     RENDER COMPLETED MEETING TABLE
+     (meeting time shown via formatTime())
+  ================================================================ */
+  function renderCompletedMeetingTable(meetings){
+    const tbody=document.getElementById('completedBody');
+    if(!meetings.length){
+      tbody.innerHTML=`<tr><td colspan="6"><div class="empty-state"><strong>No Completed Meetings</strong>Completed meetings will appear here.</div></td></tr>`;
+      return;
+    }
+    tbody.innerHTML=meetings.map(m=>{
+      const clientName = m.client_name || '—';
+      const meetLink   = m.meet_link||'';
+      const joinBtn    = meetLink
+        ? `<a href="${escapeHtml(meetLink)}" target="_blank" rel="noopener noreferrer" class="join-btn">Join Meeting</a>`
+        : `<span style="color:var(--ink-soft);font-family:var(--mono);font-size:11px;">No link</span>`;
+      return `
+        <tr>
+          <td><span class="cell-name">${escapeHtml(clientName)}</span></td>
+          <td><span class="cell-sub">${escapeHtml(m.doctor_name||'—')}</span></td>
+          <td><span class="cell-mono">${formatDate(m.meeting_date)}</span></td>
+          <td><span class="cell-mono">${formatTime(m.meeting_time)}</span></td>
+          <td>${joinBtn}</td>
+          <td><span class="badge badge-completed">${m.completed_date ? formatDate(m.completed_date) : 'Completed'}</span></td>
+        </tr>`;
+    }).join('');
+  }
+
+  /* ================================================================
+     MARK MEETING COMPLETED — unchanged logic
+  ================================================================ */
+  window.markMeetingCompleted = async function(meetingId){
+    if(!meetingId) return;
+    try{
+      const {error}=await supabase
+        .from('meetings')
+        .update({completed:true,completed_date:new Date().toISOString()})
+        .eq('id',meetingId);
+      if(error) throw error;
+      await Promise.all([
+    loadUpcomingMeetings(),
+    loadCompletedMeetings(),
+    refreshMeetingStatistics()
+]);
+    }catch(e){
+      alert('Could not mark meeting as completed: '+e.message);
+    }
+  };
+
+  /* ================================================================
+     REFRESH MEETING STATISTICS — unchanged
+  ================================================================ */
+  async function refreshMeetingStatistics(){
+    try{
+      const {data,error} = await supabase
+        .from('meetings')
+        .select('id, completed');
+      if(error) throw error;
+      const all       = data||[];
+      const total     = all.length;
+      const completed = all.filter(m=>m.completed).length;
+      const remaining = total - completed;
+      document.getElementById('statTotal').textContent     = total;
+      document.getElementById('statCompleted').textContent = completed;
+      document.getElementById('statRemaining').textContent = remaining;
+    }catch(e){
+      console.error('refreshMeetingStatistics error:',e);
+    }
+  }
+
+  // Init
+  loadPlans();
+</script>
+</body>
+</html>
