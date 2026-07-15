@@ -196,7 +196,7 @@ Handles new client registration — validates input, hashes/stores credentials, 
 
 **n8n Workflow**
 
-📷 *(Paste Sign Up Workflow Screenshot Here)*
+📷 ![Sign Up Workflow](docs/screenshots/signup-workflow.png)
 
 ---
 
