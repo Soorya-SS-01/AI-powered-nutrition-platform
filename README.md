@@ -182,6 +182,52 @@ Send Approved Nutrition Plan via Email
 Automated Appointment Reminder Emails
 ```
 
+### 🧭 What actually happens at each step
+
+**1. Client Sign Up / Sign In**
+The client creates an account or logs in through the frontend (HTML, CSS, JavaScript). Credentials are sent to n8n via webhook and validated against the `users` table in Supabase.
+
+**2. Nutrition Assessment Submitted**
+Once logged in, the client fills out a detailed nutrition assessment — personal information, medical history, lifestyle, training details, dietary recall, allergies, symptoms, medications, and food preferences.
+
+**3. Assessment Stored in Supabase**
+The assessment form data is sent to n8n through a webhook, which writes it as a structured record into the `assessments` table in Supabase.
+
+**4. Retrieve Food Database**
+n8n pulls the complete food dataset from Supabase's `food_database` table so it has every available food item to work with.
+
+**5. Filter Foods by Dietary Preference & Allergies**
+That food list is narrowed down automatically based on the client's stated dietary preference (e.g. vegetarian, vegan, non-vegetarian) and their allergies, so only safe, relevant foods move forward.
+
+**6. Retrieve Supplement Database**
+In parallel, n8n fetches supplement data from the `supplements` table, so the AI has supplement options to recommend alongside the meal plan.
+
+**7. Prepare AI Prompt**
+n8n combines the client's assessment, the filtered food list, and the supplement data into a single structured prompt — this is the exact input the AI model will reason over.
+
+**8. AI generates Plan A / Plan B / Plan C**
+The prompt is sent to **Google Gemini**, which is used for production nutrition plan generation. Gemini returns three distinct personalized plan options, a nutrition summary, supplement recommendations, and nutritionist notes, all as structured JSON.
+
+> During development, **Ollama** (running local models such as **DeepSeek**) was used to design and test the prompt locally, before switching to Google Gemini for production. This let the prompt be iterated on quickly and cheaply without repeated calls to a paid API, while the final live version of the platform runs on Gemini.
+
+**9. Store Generated Plans in Supabase**
+The three AI-generated plans, along with the nutrition summary, supplements, and notes, are saved into the `nutrition_plans` table, linked to the client's assessment ID.
+
+**10. Nutritionist Dashboard — Review & Edit**
+A nutritionist/doctor logs into the dashboard, which pulls the assessment and all three generated plans for review. They can compare the plans and edit specific meals or food quantities if needed.
+
+**11. Doctor Approves Plan**
+The nutritionist selects the final plan (A, B, or C), applies any edits, and approves it — this updates the plan's status in the `nutrition_plans` table.
+
+**12. Schedule Follow-up Meeting(s) + Generate Meet Link**
+The nutritionist schedules one or more follow-up consultations, choosing a date and time. n8n generates a Google Meet link for each meeting and stores it in the `meetings` table.
+
+**13. Send Approved Nutrition Plan via Email**
+As soon as the plan is approved, n8n automatically builds and sends an email to the client containing the approved plan, meal timings, supplement recommendations, nutritionist notes, and meeting details with the Meet link.
+
+**14. Automated Appointment Reminder Emails**
+Ahead of each scheduled meeting, a separate scheduled n8n workflow checks upcoming appointments and automatically emails the client a reminder with the date, time, and Meet link — so no follow-up is missed.
+
 ---
 
 ## ⚙️ Backend Workflows (n8n)
