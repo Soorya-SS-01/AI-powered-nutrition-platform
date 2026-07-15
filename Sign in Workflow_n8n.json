@@ -1,0 +1,177 @@
+{
+  "name": "Sign in Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "users",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "email",
+              "condition": "eq",
+              "keyValue": "={{$json.body.email}}"
+            },
+            {
+              "keyName": "password",
+              "condition": "eq",
+              "keyValue": "={{$json.body.password}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        64,
+        -64
+      ],
+      "id": "4a5af3b0-2ea1-4ffe-bb55-2844a199de87",
+      "name": "Check the user in DB",
+      "alwaysOutputData": true,
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "ca1a9dee-d65d-4d18-b979-3275b27d87ec",
+              "leftValue": "={{ $json.id }}",
+              "rightValue": 0,
+              "operator": {
+                "type": "number",
+                "operation": "exists",
+                "singleValue": true
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        256,
+        -64
+      ],
+      "id": "b8d9c043-1b29-4c28-9550-54a94b3377ce",
+      "name": "Make Decision"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"success\": true,\n  \"user_id\": {{ $json.id }},\n  \"full_name\": \"{{ $json.full_name }}\",\n  \"email\": \"{{ $json.email }}\",\n  \"mobile_number\": \"{{ $json.mobile_number }}\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        528,
+        -160
+      ],
+      "id": "0d382f99-007f-4d24-be0e-27a80585fea7",
+      "name": "Respond to Webhook (Successful Login)"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": false,\n  \"message\": \"Invalid email or password\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        560,
+        80
+      ],
+      "id": "6a95aa22-5592-48a8-99db-497f80eeb6d1",
+      "name": "Respond to Webhook (Login Fails - Invalid Credentials)"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "login",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -144,
+        -64
+      ],
+      "id": "91d4d008-5880-4f87-ac8e-60148bf22d67",
+      "name": "Listens for Sign In",
+      "webhookId": "68f9a1d9-3871-4996-9e92-c56a75c1d96a"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Check the user in DB": {
+      "main": [
+        [
+          {
+            "node": "Make Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Make Decision": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook (Successful Login)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond to Webhook (Login Fails - Invalid Credentials)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listens for Sign In": {
+      "main": [
+        [
+          {
+            "node": "Check the user in DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "c9db3316-690d-44d1-842b-8a284a84ab02",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6d00308088d1e0f9854752a9b0783fc9c4cd0c5d7ba070a81ff40e96ec7458a8"
+  },
+  "id": "UHZb42snkYW1sOpZ",
+  "tags": []
+}

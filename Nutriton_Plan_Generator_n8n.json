@@ -1,0 +1,621 @@
+{
+  "name": "AI Nutrition",
+  "nodes": [
+    {
+      "parameters": {
+        "tableId": "assessments",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{$json.body.user_id}}"
+            },
+            {
+              "fieldId": "full_name",
+              "fieldValue": "={{$json.body.full_name}}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{$json.body.email}}"
+            },
+            {
+              "fieldId": "mobile_number",
+              "fieldValue": "={{$json.body.mobile_number}}"
+            },
+            {
+              "fieldId": "assessment_data",
+              "fieldValue": "={{$json.body}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        48,
+        -240
+      ],
+      "id": "e4a7b014-4013-465d-a846-f7bf51ef790e",
+      "name": "Assessment to DB",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "nutrition-form",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        -240
+      ],
+      "id": "6389a4df-001d-447a-98fc-2f0769c8087a",
+      "name": "Listen for Assesment ",
+      "webhookId": "58e0a70c-81a7-40db-b3ad-8070172d8344"
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "food_database",
+        "limit": "=1000"
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        240,
+        -448
+      ],
+      "id": "42ceb2eb-4fd2-4dee-bfd1-5ce819d5f9e9",
+      "name": "Get food db",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "getAll",
+        "tableId": "supplement_database",
+        "limit": 30
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        336,
+        -80
+      ],
+      "id": "872a08d0-193e-4f96-9234-fc54b2dd869c",
+      "name": "get supplement db",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "numberInputs": 3
+      },
+      "type": "n8n-nodes-base.merge",
+      "typeVersion": 3.2,
+      "position": [
+        592,
+        -256
+      ],
+      "id": "ab5d9ed8-2c07-4243-a1b2-0afbc33dd055",
+      "name": "merge food + supplement + assessment data"
+    },
+    {
+      "parameters": {
+        "modelId": {
+          "__rl": true,
+          "value": "models/gemini-3-flash-preview",
+          "mode": "list",
+          "cachedResultName": "models/gemini-3-flash-preview"
+        },
+        "messages": {
+          "values": [
+            {
+              "content": "=\n  \"prompt\": {{$json.prompt.toJsonString()}},\n"
+            }
+          ]
+        },
+        "builtInTools": {},
+        "options": {}
+      },
+      "type": "@n8n/n8n-nodes-langchain.googleGemini",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        -512
+      ],
+      "id": "db251ad8-056e-49e9-b00a-49f801ff37d9",
+      "name": "Message a model",
+      "credentials": {
+        "googlePalmApi": {
+          "id": "O60XMSKUdRkixVAf",
+          "name": "Google Gemini(PaLM) Api account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:11434/api/generate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"deepseek-r1:7b\",\n  \"prompt\": {{$json.prompt.toJsonString()}},\n  \"stream\": false\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        1248,
+        -256
+      ],
+      "id": "db83cd23-c837-4b3b-94fa-0423229ade0b",
+      "name": "HTTP Request"
+    },
+    {
+      "parameters": {
+        "jsCode": "const assessment = $('Assessment to DB').first().json.assessment_data;\n\nconst preference = assessment.nutrition.foodPreference || \"\";\nconst allergies = assessment.allergies.selected || [];\n\nlet foods = items;\n\n// ------------------------------\n// Diet Preference Filter\n// ------------------------------\n\nfoods = foods.filter(food => {\n\n  const row = food.json;\n\n  // Normalize preference\n  const pref = preference.toLowerCase();\n\n  if (pref.includes(\"vegan\"))\n    return Number(row[\"Vegan\"]) === 1;\n\n  if (pref.includes(\"vegetarian\") && !pref.includes(\"non\"))\n    return Number(row[\"Vegetarian\"]) === 1;\n\n  if (pref.includes(\"eggetarian\"))\n    return Number(row[\"Eggetarian\"]) === 1;\n\n  if (pref.includes(\"pisc\"))\n    return Number(row[\"Piscetarian\"]) === 1;\n\n  if (pref.includes(\"non-veg\") || pref.includes(\"non vegetarian\"))\n    return Number(row[\"Non Vegetarian\"]) === 1;\n\n  return true;\n});\n\n// ------------------------------\n// Allergy Filter\n// ------------------------------\n\nif (allergies.some(a => a.includes(\"MLK\")))\n  foods = foods.filter(f => Number(f.json.MLK) !== 1);\n\nif (allergies.some(a => a.includes(\"HYP\")))\n  foods = foods.filter(f => Number(f.json.HYP) !== 1);\n\nif (allergies.some(a => a.includes(\"PE\")))\n  foods = foods.filter(f => Number(f.json.PE) !== 1);\n\nif (allergies.some(a => a.includes(\"SOY\")))\n  foods = foods.filter(f => Number(f.json.SOY) !== 1);\n\nif (allergies.some(a => a.includes(\"EGG\")))\n  foods = foods.filter(f => Number(f.json.EGG) !== 1);\n\nif (allergies.some(a => a.includes(\"SF\")))\n  foods = foods.filter(f => Number(f.json.SF) !== 1);\n\nconsole.log(\"Food Preference:\", preference);\nconsole.log(\"Allergies:\", allergies);\nconsole.log(\"Foods after filtering:\", foods.length);\n\nreturn foods;"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        416,
+        -448
+      ],
+      "id": "df39c3e6-e209-4d6e-bb0d-505cf132577b",
+      "name": "Filter Foods"
+    },
+    {
+      "parameters": {
+        "jsCode": "let assessment = null;\n\nconst foods = [];\nconst supplements = [];\n\nfor (const item of items) {\n\n  // Assessment\n  if (item.json.assessment_data) {\n    assessment = item.json;\n    continue;\n  }\n\n  // Food Database\n  if (\"Food\" in item.json) {\n    foods.push(item.json);\n    continue;\n  }\n\n  // Supplement Database\n  if (\"SupplementName\" in item.json) {\n    supplements.push(item.json);\n    continue;\n  }\n\n}\n\nreturn [\n  {\n    json: {\n      assessment,\n      foods,\n      supplements\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        784,
+        -256
+      ],
+      "id": "8a3e82ea-1c29-4376-a1cd-38c74c4ac213",
+      "name": "Organize Merged Data"
+    },
+    {
+      "parameters": {
+        "jsCode": "const assessment = $json.assessment;\nconst foods = $json.foods;\nconst supplements = $json.supplements;\n\nconst prompt = `\nYou are an experienced clinical nutritionist responsible for generating personalized nutrition plans.\n\n=========================\nPATIENT ASSESSMENT\n=========================\n\n${JSON.stringify(assessment)}\n\n=========================\nAVAILABLE FOOD DATABASE\n=========================\n\nThe following foods have already been filtered according to the patient's dietary preference and allergies.\n\nIMPORTANT:\n- Select foods ONLY from this food database.\n- Do NOT invent new food items.\n- Do NOT use foods that are not present in this database.\n- Use the food name exactly as provided.\n- Use appropriate quantities based on the patient's requirements.\n\n${JSON.stringify(foods)}\n\n=========================\nAVAILABLE SUPPLEMENTS DATABASE\n=========================\n\nThe following supplements are available.\n\nIMPORTANT:\n- Recommend supplements ONLY from this supplement database.\n- Do NOT invent supplements.\n- Recommend supplements only if they are genuinely beneficial based on the patient's assessment.\n- Include dosage if available.\n\n${JSON.stringify(supplements)}\n\n=========================\nTASK\n=========================\n\nUsing ONLY the assessment, filtered food database, and supplement database provided above, generate THREE different personalized nutrition plans.\n\nThe plans must be based on:\n\n- Age\n- Gender\n- Height\n- Weight\n- BMI\n- Goal\n- Activity Level\n- Medical Conditions\n- Allergies\n- Dietary Preference\n- Lifestyle\n- Current Training Status\n- Symptoms\n- Medications\n- Family History\n- Dietary Recall\n\nMeal timings must be EXACTLY as follows:\n\n06:00 AM On Waking Up\n08:00 AM Breakfast\n10:30 AM Morning Snack\n01:00 PM Lunch\n04:00 PM Pre Workout\n06:00 PM Post Workout\n08:00 PM Dinner\n09:30 PM Bed Time\n\nEach meal must be an array of food objects.\n\nEach food object must contain ONLY:\n\n{\n  \"name\": \"\",\n  \"quantity\": \"\"\n}\n\nGenerate three different nutrition plans:\n\n- Plan A\n- Plan B\n- Plan C\n\nEach plan should be different while still satisfying the patient's nutritional requirements.\n\nEstimate and return:\n\n- Total Calories\n- Total Carbohydrates\n- Total Protein\n- Total Fat\n\nRecommend supplements ONLY from the provided supplement database.\n\nFinally provide professional nutritionist notes specific to the patient.\n\nReturn ONLY the following JSON structure.\n\n{\n  \"total_calories\": \"\",\n  \"total_carbs\": \"\",\n  \"total_protein\": \"\",\n  \"total_fat\": \"\",\n\n  \"planA\": {\n    \"06:00 AM On Waking Up\": [],\n    \"08:00 AM Breakfast\": [],\n    \"10:30 AM Morning Snack\": [],\n    \"01:00 PM Lunch\": [],\n    \"04:00 PM Pre Workout\": [],\n    \"06:00 PM Post Workout\": [],\n    \"08:00 PM Dinner\": [],\n    \"09:30 PM Bed Time\": []\n  },\n\n  \"planB\": {\n    \"06:00 AM On Waking Up\": [],\n    \"08:00 AM Breakfast\": [],\n    \"10:30 AM Morning Snack\": [],\n    \"01:00 PM Lunch\": [],\n    \"04:00 PM Pre Workout\": [],\n    \"06:00 PM Post Workout\": [],\n    \"08:00 PM Dinner\": [],\n    \"09:30 PM Bed Time\": []\n  },\n\n  \"planC\": {\n    \"06:00 AM On Waking Up\": [],\n    \"08:00 AM Breakfast\": [],\n    \"10:30 AM Morning Snack\": [],\n    \"01:00 PM Lunch\": [],\n    \"04:00 PM Pre Workout\": [],\n    \"06:00 PM Post Workout\": [],\n    \"08:00 PM Dinner\": [],\n    \"09:30 PM Bed Time\": []\n  },\n\n  \"supplements\": [\n    {\n      \"name\": \"\",\n      \"dosage\": \"\"\n    }\n  ],\n\n  \"nutritionist_notes\": \"\"\n}\n\nSTRICT RULES\n\n1. Return ONLY valid JSON.\n2. Do NOT use markdown.\n3. Do NOT use \\`\\`\\`.\n4. Do NOT explain anything.\n5. Do NOT include reasoning or thinking.\n6. Every value must be valid JSON.\n7. Every string must be enclosed in double quotes.\n8. Use commas correctly.\n9. Do NOT invent extra fields.\n10. Do NOT invent foods that are not present in the provided food database.\n11. Do NOT invent supplements that are not present in the provided supplement database.\n12. The output MUST be parseable using JSON.parse()\n13. Do NOT leave any required field empty.\n14. Every meal in Plan A, Plan B, and Plan C must contain at least one food item.\n15. Every food item must contain both a valid \"name\" and \"quantity\".\n16. Do NOT return empty arrays for any meal unless it is medically inappropriate.\n17. Do NOT return empty strings for calories, carbohydrates, protein, fat, dosage, or nutritionist notes.\n18. Every nutrition plan must be complete and practical for a full day.\n19. Every selected food must be chosen ONLY from the provided food database.\n20. Every recommended supplement must be chosen ONLY from the provided supplement database.\n21. Ensure all generated plans are nutritionally balanced and medically appropriate based on the patient's assessment.\n22. The output MUST be valid JSON and parseable using JSON.parse().\n23. Every food item returned in Plan A, Plan B, and Plan C MUST exist in the provided food database.\n24. Do NOT generate duplicate food items within the same meal.\n25. Use realistic serving quantities for every food item.\n26. Ensure Plan A, Plan B, and Plan C are meaningfully different from each other while satisfying the same nutritional goals.\n`;\n\nreturn [\n  {\n    json: {\n      prompt\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1008,
+        -256
+      ],
+      "id": "b127eeb9-4e75-4f78-b6f1-772b87b23ace",
+      "name": "Prompt Generation"
+    },
+    {
+      "parameters": {
+        "jsCode": "const text = $json.content.parts[0].text;\n\nreturn [\n  {\n    json: JSON.parse(text)\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1504,
+        -512
+      ],
+      "id": "b704581d-ae53-48a6-88ee-0cd9080e40d5",
+      "name": "Extract Gemini Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "let text = $json.response.trim();\n\n// Find first JSON object\nconst start = text.indexOf('{');\n\nlet depth = 0;\nlet end = -1;\n\nfor (let i = start; i < text.length; i++) {\n  if (text[i] === '{') depth++;\n  if (text[i] === '}') depth--;\n\n  if (depth === 0) {\n    end = i;\n    break;\n  }\n}\n\nif (start === -1 || end === -1) {\n  throw new Error('Could not find complete JSON object');\n}\n\nconst jsonText = text.substring(start, end + 1);\n\nreturn [\n  {\n    json: JSON.parse(jsonText)\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1424,
+        -256
+      ],
+      "id": "31b6a018-738f-4246-8954-966937aee582",
+      "name": "Extract Deepseek Response"
+    },
+    {
+      "parameters": {
+        "jsCode": "const plan = $json;\n\nconst assessment = $('Organize Merged Data').first().json.assessment;\n\nreturn [\n  {\n    json: {\n      assessment_id: $('Assessment to DB').first().json.id,\n      user_id: assessment.user_id || '',\n      full_name: assessment.full_name || '',\n      email: assessment.email || '',\n      mobile_number: assessment.mobile_number || '',\n\n      generated_plan: {\n        plan_name: plan.plan_name || '',\n        total_calories: plan.total_calories || '',\n        total_carbs: plan.total_carbs || '',\n        total_protein: plan.total_protein || '',\n        total_fat: plan.total_fat || '',\n\n        plan_a: plan.planA || {},\n        plan_b: plan.planB || {},\n        plan_c: plan.planC || {},\n\n        supplements: plan.supplements || [],\n        nutritionist_notes: plan.nutritionist_notes || ''\n      },\n\n      approval_status: 'pending'\n    }\n  }\n];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1664,
+        -256
+      ],
+      "id": "c27888c4-2895-420b-ad18-771ca4e1e075",
+      "name": "Prepare Database Record"
+    },
+    {
+      "parameters": {
+        "tableId": "nutrition_plans",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{$json.user_id}}"
+            },
+            {
+              "fieldId": "full_name",
+              "fieldValue": "={{$json.full_name}}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{$json.email}}"
+            },
+            {
+              "fieldId": "mobile_number",
+              "fieldValue": "={{$json.mobile_number}}"
+            },
+            {
+              "fieldId": "generated_plan",
+              "fieldValue": "={{$json.generated_plan}}"
+            },
+            {
+              "fieldId": "approval_status",
+              "fieldValue": "={{$json.approval_status}}"
+            },
+            {
+              "fieldId": "assessment_id",
+              "fieldValue": "={{$json.assessment_id}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        1840,
+        -256
+      ],
+      "id": "998ed1d1-402e-4b46-91bb-074fcc6aa3f5",
+      "name": "Plans to DB",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {
+    "Listen for Assesment ": [
+      {
+        "json": {
+          "headers": {
+            "host": "localhost:5678",
+            "connection": "keep-alive",
+            "content-length": "1789",
+            "sec-ch-ua-platform": "\"Windows\"",
+            "user-agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/149.0.0.0 Safari/537.36 Edg/149.0.0.0",
+            "sec-ch-ua": "\"Microsoft Edge\";v=\"149\", \"Chromium\";v=\"149\", \"Not)A;Brand\";v=\"24\"",
+            "content-type": "application/json",
+            "sec-ch-ua-mobile": "?0",
+            "accept": "*/*",
+            "origin": "http://127.0.0.1:5500",
+            "sec-fetch-site": "cross-site",
+            "sec-fetch-mode": "cors",
+            "sec-fetch-dest": "empty",
+            "referer": "http://127.0.0.1:5500/",
+            "accept-encoding": "gzip, deflate, br, zstd",
+            "accept-language": "en-US,en;q=0.9"
+          },
+          "params": {},
+          "query": {},
+          "body": {
+            "user_id": "12",
+            "full_name": "Soorya S S",
+            "email": "sooryasakthivel01@gmail.com",
+            "mobile_number": "8870305577",
+            "personalInfo": {
+              "fullName": "Soorya S S",
+              "dateOfBirth": "2006-01-19",
+              "contactNumber": "8870305577",
+              "email": "sooryasakthivel01@gmail.com",
+              "nationality": "India",
+              "occupation": "Student ",
+              "bloodGroup": "O +ve",
+              "weight": "75",
+              "height": "175 CM",
+              "residentialAddress": "Coimbatore",
+              "workSchoolTimings": "9 am - 5 pm",
+              "goals": "1. To reduce the belly fat\n2. To lead a healthy lifestyle",
+              "additionalInfo": ""
+            },
+            "training": {
+              "currentlyTrains": "No — I do not train currently",
+              "sportType": [
+                "Cricket"
+              ],
+              "trainingScheduleSport": "Cricket\nSaturday, Sunday\n4pm - 6pm",
+              "fitnessType": [],
+              "trainingScheduleFitness": "None",
+              "trainingNotes": "None"
+            },
+            "nutrition": {
+              "foodPreference": "Non-Vegetarian",
+              "waterIntake": "2 – 4 L",
+              "foodsDislike": "Brinjal",
+              "foodsEnjoy": "Chicken",
+              "cookingOil": "Coconut Oil",
+              "eatOutFrequency": "2",
+              "alcoholConsumption": "None",
+              "smokingDrugs": "None",
+              "nonVegDaysAvoided": "None"
+            },
+            "dietaryRecall": {
+              "earlyMorning": "",
+              "breakfast": "",
+              "midMorningSnack": "",
+              "lunch": "",
+              "eveningSnack": "",
+              "dinner": "",
+              "postDinner": "",
+              "preWorkout": "",
+              "duringWorkout": "",
+              "postWorkout": "",
+              "beverageOther": ""
+            },
+            "allergies": {
+              "selected": [
+                "N/A — Not Applicable"
+              ],
+              "otherDetails": ""
+            },
+            "familyHistory": {
+              "selected": [
+                "Not Applicable / None"
+              ],
+              "details": ""
+            },
+            "medicalConditions": {
+              "selected": [
+                "Not Applicable"
+              ],
+              "otherDetails": ""
+            },
+            "injuries": {
+              "selected": [
+                "Not Applicable"
+              ],
+              "notes": ""
+            },
+            "symptoms": {
+              "general": [
+                "Not Applicable"
+              ],
+              "skinHair": [
+                "Acne"
+              ],
+              "cardiopulmonary": [
+                "Not Applicable"
+              ],
+              "gastrointestinal": [
+                "Not Applicable"
+              ],
+              "neurological": [
+                "Not Applicable"
+              ],
+              "mindEmotions": [
+                "Not Applicable"
+              ],
+              "reproductive": [
+                "Not Applicable"
+              ],
+              "other": ""
+            },
+            "medications": {
+              "currentMedications": "",
+              "currentSupplements": ""
+            },
+            "submittedAt": "2026-07-06T05:23:38.469Z"
+          },
+          "webhookUrl": "http://localhost:5678/webhook-test/nutrition-form",
+          "executionMode": "test"
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ],
+    "Message a model": [
+      {
+        "json": {
+          "content": {
+            "parts": [
+              {
+                "text": "{\n  \"total_calories\": \"1850 kcal\",\n  \"total_carbs\": \"115g\",\n  \"total_protein\": \"210g\",\n  \"total_fat\": \"65g\",\n\n  \"planA\": {\n    \"06:00 AM On Waking Up\": [\n      {\n        \"name\": \"MB Whey Isolate 90% (unflavoured)\",\n        \"quantity\": \"1 scoop\"\n      }\n    ],\n    \"08:00 AM Breakfast\": [\n      {\n        \"name\": \"Soy Egg (2 Whites + 1 yolk)\",\n        \"quantity\": \"2 portions\"\n      },\n      {\n        \"name\": \"Chana curry\",\n        \"quantity\": \"100 g\"\n      }\n    ],\n    \"10:30 AM Morning Snack\": [\n      {\n        \"name\": \"Edamame Salad\",\n        \"quantity\": \"150g\"\n      }\n    ],\n    \"01:00 PM Lunch\": [\n      {\n        \"name\": \"Grilled chicken breast with sautéed vegetables (The salad studio)\",\n        \"quantity\": \"1 serving\"\n      },\n      {\n        \"name\": \"Masoor dal Curry\",\n        \"quantity\": \"100 gm\"\n      }\n    ],\n    \"04:00 PM Pre Workout\": [\n      {\n        \"name\": \"MB Whey Isolate 90% (unflavoured)\",\n        \"quantity\": \"1 scoop\"\n      }\n    ],\n    \"06:00 PM Post Workout\": [\n      {\n        \"name\": \"Shredded chicken\",\n        \"quantity\": \"150g\"\n      }\n    ],\n    \"08:00 PM Dinner\": [\n      {\n        \"name\": \"Chicken spinach kebab\",\n        \"quantity\": \"200g\"\n      }\n    ],\n    \"09:30 PM Bed Time\": [\n      {\n        \"name\": \"Cottage cheese\",\n        \"quantity\": \"100g\"\n      }\n    ]\n  },\n\n  \"planB\": {\n    \"06:00 AM On Waking Up\": [\n      {\n        \"name\": \"MB Whey Isolate 90% (unflavoured)\",\n        \"quantity\": \"1 scoop\"\n      }\n    ],\n    \"08:00 AM Breakfast\": [\n      {\n        \"name\": \"Tofu scramble\",\n        \"quantity\": \"200g\"\n      }\n    ],\n    \"10:30 AM Morning Snack\": [\n      {\n        \"name\": \"Soy Milk (Bonsoy)\",\n        \"quantity\": \"200ml\"\n      }\n    ],\n    \"01:00 PM Lunch\": [\n      {\n        \"name\": \"Basa Fish Fillet\",\n        \"quantity\": \"200 g\"\n      },\n      {\n        \"name\": \"Masoor dal Curry\",\n        \"quantity\": \"150 gm\"\n      }\n    ],\n    \"04:00 PM Pre Workout\": [\n      {\n        \"name\": \"MB Whey Isolate 90% (unflavoured)\",\n        \"quantity\": \"1 scoop\"\n      }\n    ],\n    \"06:00 PM Post Workout\": [\n      {\n        \"name\": \"Tuna Fish\",\n        \"quantity\": \"100gm\"\n      }\n    ],\n    \"08:00 PM Dinner\": [\n      {\n        \"name\": \"Chicken Kurma\",\n        \"quantity\": \"150g\"\n      }\n    ],\n    \"09:30 PM Bed Time\": [\n      {\n        \"name\": \"Tofu Cubes\",\n        \"quantity\": \"4 cubes\"\n      }\n    ]\n  },\n\n  \"planC\": {\n    \"06:00 AM On Waking Up\": [\n      {\n        \"name\": \"MB Whey Isolate 90% (unflavoured)\",\n        \"quantity\": \"1 scoop\"\n      }\n    ],\n    \"08:00 AM Breakfast\": [\n      {\n        \"name\": \"Chicken Taco\",\n        \"quantity\": \"2 Taco\"\n      }\n    ],\n    \"10:30 AM Morning Snack\": [\n      {\n        \"name\": \"Caprese salad\",\n        \"quantity\": \"150g\"\n      }\n    ],\n    \"01:00 PM Lunch\": [\n      {\n        \"name\": \"Roasted chicken salad (Salad days)\",\n        \"quantity\": \"1 portion\"\n      },\n      {\n        \"name\": \"Herman Brot High Protein Low Carb Wraps\",\n        \"quantity\": \"1 wrap\"\n      }\n    ],\n    \"04:00 PM Pre Workout\": [\n      {\n        \"name\": \"MB Whey Isolate 90% (unflavoured)\",\n        \"quantity\": \"1 scoop\"\n      }\n    ],\n    \"06:00 PM Post Workout\": [\n      {\n        \"name\": \"Egg dropped chicken soup (O4H)\",\n        \"quantity\": \"200 ml\"\n      }\n    ],\n    \"08:00 PM Dinner\": [\n      {\n        \"name\": \"Grilled fish fillet\",\n        \"quantity\": \"200g\"\n      }\n    ],\n    \"09:30 PM Bed Time\": [\n      {\n        \"name\": \"MB Whey Isolate 90% (unflavoured)\",\n        \"quantity\": \"1 scoop\"\n      }\n    ]\n  },\n\n  \"supplements\": [\n    {\n      \"name\": \"Neuherbs Deep Sea Omega 3 Fish Oil - Omega 3 Supplement Triple Strength 2500 Mg\",\n      \"dosage\": \"1 capsule daily with lunch\"\n    },\n    {\n      \"name\": \"Sunshine Nutrition - Vitamin C (500mg)\",\n      \"dosage\": \"1 tablet daily with breakfast\"\n    },\n    {\n      \"name\": \"Probulin daily care probiotic capsules for digestive health\",\n      \"dosage\": \"1 capsule daily on an empty stomach\"\n    },\n    {\n      \"name\": \"Magnesium Glycinate (Healthy Hey)\",\n      \"dosage\": \"1 tablet daily at bedtime\"\n    }\n  ],\n\n  \"nutritionist_notes\": \"The primary focus for Soorya is to reduce belly fat while maintaining muscle mass for cricket training. The plan is high in lean protein (chicken, fish, whey isolate) to promote satiety and support recovery. Carbohydrates are moderated and focused on high-fiber sources like dal, edamame, and low-carb wraps to manage blood sugar and insulin levels, which is crucial for fat loss and acne management. Vitamin C and Omega-3 are recommended to support skin health and reduce inflammation associated with acne. Probiotics are included to improve gut health, which often correlates with skin clarity. Given the use of coconut oil, please ensure it is used sparingly for sautéing rather than deep frying. Stay hydrated with at least 3-4 liters of water daily as per your assessment.\"\n}",
+                "thoughtSignature": "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"
+              }
+            ],
+            "role": "model"
+          },
+          "finishReason": "STOP",
+          "index": 0
+        },
+        "pairedItem": {
+          "item": 0
+        }
+      }
+    ]
+  },
+  "connections": {
+    "Assessment to DB": {
+      "main": [
+        [
+          {
+            "node": "Get food db",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "get supplement db",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "merge food + supplement + assessment data",
+            "type": "main",
+            "index": 1
+          }
+        ]
+      ]
+    },
+    "Listen for Assesment ": {
+      "main": [
+        [
+          {
+            "node": "Assessment to DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get food db": {
+      "main": [
+        [
+          {
+            "node": "Filter Foods",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "get supplement db": {
+      "main": [
+        [
+          {
+            "node": "merge food + supplement + assessment data",
+            "type": "main",
+            "index": 2
+          }
+        ]
+      ]
+    },
+    "merge food + supplement + assessment data": {
+      "main": [
+        [
+          {
+            "node": "Organize Merged Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Message a model": {
+      "main": [
+        [
+          {
+            "node": "Extract Gemini Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTTP Request": {
+      "main": [
+        [
+          {
+            "node": "Extract Deepseek Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Filter Foods": {
+      "main": [
+        [
+          {
+            "node": "merge food + supplement + assessment data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Organize Merged Data": {
+      "main": [
+        [
+          {
+            "node": "Prompt Generation",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prompt Generation": {
+      "main": [
+        [
+          {
+            "node": "Message a model",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Gemini Response": {
+      "main": [
+        [
+          {
+            "node": "Prepare Database Record",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Deepseek Response": {
+      "main": [
+        []
+      ]
+    },
+    "Prepare Database Record": {
+      "main": [
+        [
+          {
+            "node": "Plans to DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "f2e53c59-ffe6-4c6c-b479-c2bf033f9a29",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6d00308088d1e0f9854752a9b0783fc9c4cd0c5d7ba070a81ff40e96ec7458a8"
+  },
+  "id": "3p2eoJRRHs04tMyW",
+  "tags": []
+}

@@ -1,0 +1,113 @@
+{
+  "name": "Sign up Workflow",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Account created successfully\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        192,
+        -32
+      ],
+      "id": "83d65c28-b472-4868-b9e0-c596bb52b487",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "tableId": "users",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "full_name",
+              "fieldValue": "={{$json.body.fullName}}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{$json.body.email}}"
+            },
+            {
+              "fieldId": "mobile_number",
+              "fieldValue": "={{$json.body.mobileNumber}}"
+            },
+            {
+              "fieldId": "password",
+              "fieldValue": "={{$json.body.password}}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -32
+      ],
+      "id": "0cc676a6-5e27-4fac-9c1a-4fb5c97241c7",
+      "name": "Create new user and append in DB",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "signup",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -208,
+        -32
+      ],
+      "id": "818b3de5-5664-4d35-9a5d-3fd91fa0d324",
+      "name": "Listens for Signup",
+      "webhookId": "d2746bf8-02c3-43a3-ae98-09b0dc87e967"
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Create new user and append in DB": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listens for Signup": {
+      "main": [
+        [
+          {
+            "node": "Create new user and append in DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "9768758b-f60f-4dc0-8172-5e4af1f61ff3",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6d00308088d1e0f9854752a9b0783fc9c4cd0c5d7ba070a81ff40e96ec7458a8"
+  },
+  "id": "8tCvb1IoyI8bH7Dp",
+  "tags": []
+}

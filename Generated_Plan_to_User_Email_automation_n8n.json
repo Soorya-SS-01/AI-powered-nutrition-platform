@@ -1,0 +1,346 @@
+{
+  "name": "Email Autmation",
+  "nodes": [
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "{\n  \"success\": true,\n  \"message\": \"Webhook received\"\n}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.5,
+      "position": [
+        208,
+        -416
+      ],
+      "id": "0fd2b2f7-6580-431b-a000-0f23aded92eb",
+      "name": "Respond to Webhook"
+    },
+    {
+      "parameters": {
+        "jsCode": "const data = $json.body;\n\nreturn [{\n  json: {\n    plan_id: data.plan_id,\n    assessment_id: data.assessment_id,\n    user_id: data.user_id,\n\n    client_name: data.client_name,\n    email: data.email,\n    doctor_name: data.doctor_name,\n\n    approved_plan: data.approved_plan,\n    selected_plan: data.selected_plan,\n\n    plan_duration_days: data.plan_duration_days,\n    meetings: data.meetings,\n\n    total_calories: data.total_calories,\n    total_carbs: data.total_carbs,\n    total_protein: data.total_protein,\n    total_fat: data.total_fat,\n\n    supplements: data.supplements || [],\n\n    nutritionist_notes: data.nutritionist_notes || \"\"\n  }\n}];"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -880,
+        -480
+      ],
+      "id": "2506b530-bde5-4367-a026-0ce10b963a00",
+      "name": "Code in JavaScript"
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "send-approved-plan",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -1104,
+        -512
+      ],
+      "id": "7461ff54-7d99-4dd5-a14b-b8b4963e2b0f",
+      "name": "Listens for Approved plan",
+      "webhookId": "b99f1a2a-dcf2-4fc4-91dd-c3fd91bbd471"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://127.0.0.1:5000/generate-pdf",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{$json}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.4,
+      "position": [
+        -592,
+        -704
+      ],
+      "id": "fa52a1a5-3cac-44a9-89ae-8fc378d96a1b",
+      "name": "PDF Generation via Flask"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $json.pdf_path }}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1.1,
+      "position": [
+        -384,
+        -688
+      ],
+      "id": "429fc852-c60b-4b45-9d72-cecee05c1048",
+      "name": "Read Generated PDF from Disk"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ $('PDF Generation via Flask').item.json.email }}",
+        "subject": "Your Personalized Nutrition Plan",
+        "message": "=Dear {{ $('PDF Generation via Flask').item.json.client_name }},\n\n<br><br>\n\nYour personalized nutrition plan has been successfully created by our nutritionist.\n\n<br><br>\n\nPlease find your approved nutrition plan attached to this email.\n\n<br><br>\n\nWe wish you the very best on your health and wellness journey.\n\n<br><br>\n\nRegards,<br>\n<b>NutrifyMyDiet</b>",
+        "options": {
+          "appendAttribution": false,
+          "attachmentsUi": {
+            "attachmentsBinary": [
+              {}
+            ]
+          }
+        }
+      },
+      "type": "n8n-nodes-base.gmail",
+      "typeVersion": 2.2,
+      "position": [
+        -624,
+        -368
+      ],
+      "id": "f9dc6eae-b8c0-47e5-8348-a3dd023300c7",
+      "name": "Send PDF to the User",
+      "webhookId": "5066fe1f-44f0-43ee-baa9-394340c86c5f",
+      "alwaysOutputData": false,
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "sq8fjqlurtfLiuf7",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "tableId": "nutrition_plans",
+        "filters": {
+          "conditions": [
+            {
+              "keyName": "id",
+              "condition": "eq",
+              "keyValue": "={{ $('PDF Generation via Flask').item.json.plan_id }}"
+            }
+          ]
+        },
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "email_sent",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "email_sent_at",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            },
+            {
+              "fieldId": "pdf_path",
+              "fieldValue": "={{ $('PDF Generation via Flask').item.json.pdf_path }}"
+            },
+            {
+              "fieldId": "pdf_generated",
+              "fieldValue": "true"
+            },
+            {
+              "fieldId": "pdf_generated_at",
+              "fieldValue": "={{ new Date().toISOString() }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -448,
+        -384
+      ],
+      "id": "7b924b25-a0cc-4a71-a894-d5f81d1d02d5",
+      "name": "Update DB",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Get the original webhook payload\nconst data = $(\"Listens for Approved plan\").first().json.body;\n\n// Meetings array\nconst meetings = data.meetings || [];\n\n// Return one item per meeting\nreturn meetings.map(meeting => ({\n  json: {\n    plan_id: Number(data.plan_id),\n    user_id: Number(data.user_id),   // Convert to integer\n\n    doctor_name: data.doctor_name,\n    plan_duration_days: Number(data.plan_duration_days),\n\n    meeting_date: meeting.meeting_date,\n    meeting_time: meeting.meeting_time,\n    meet_link: meeting.meet_link,\n\n    completed: false\n  }\n}));"
+      },
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -240,
+        -384
+      ],
+      "id": "00b9e3dc-6286-484c-af5d-2396bd355245",
+      "name": "Code in JavaScript1"
+    },
+    {
+      "parameters": {
+        "tableId": "meetings",
+        "fieldsUi": {
+          "fieldValues": [
+            {
+              "fieldId": "plan_id",
+              "fieldValue": "={{ $json.plan_id }}"
+            },
+            {
+              "fieldId": "user_id",
+              "fieldValue": "={{ $json.user_id }}"
+            },
+            {
+              "fieldId": "doctor_name",
+              "fieldValue": "={{ $json.doctor_name }}"
+            },
+            {
+              "fieldId": "meeting_date",
+              "fieldValue": "={{ $json.meeting_date }}"
+            },
+            {
+              "fieldId": "meet_link",
+              "fieldValue": "={{ $json.meet_link }}"
+            },
+            {
+              "fieldId": "completed",
+              "fieldValue": "={{ $json.completed }}"
+            },
+            {
+              "fieldId": "meeting_time",
+              "fieldValue": "={{ $json.meeting_time }}"
+            },
+            {
+              "fieldId": "client_name",
+              "fieldValue": "={{ $('Listens for Approved plan').item.json.body.client_name }}"
+            },
+            {
+              "fieldId": "email",
+              "fieldValue": "={{ $('Update DB').item.json.email }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.supabase",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -384
+      ],
+      "id": "7dfa461c-6c90-476f-bb56-afe110c76930",
+      "name": "Create a row",
+      "credentials": {
+        "supabaseApi": {
+          "id": "A0TQ7bdZDt5Lze7o",
+          "name": "Supabase account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Respond to Webhook": {
+      "main": [
+        []
+      ]
+    },
+    "Code in JavaScript": {
+      "main": [
+        [
+          {
+            "node": "PDF Generation via Flask",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Listens for Approved plan": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "PDF Generation via Flask": {
+      "main": [
+        [
+          {
+            "node": "Read Generated PDF from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Generated PDF from Disk": {
+      "main": [
+        [
+          {
+            "node": "Send PDF to the User",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send PDF to the User": {
+      "main": [
+        [
+          {
+            "node": "Update DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update DB": {
+      "main": [
+        [
+          {
+            "node": "Code in JavaScript1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Code in JavaScript1": {
+      "main": [
+        [
+          {
+            "node": "Create a row",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Create a row": {
+      "main": [
+        [
+          {
+            "node": "Respond to Webhook",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {
+    "executionOrder": "v1",
+    "binaryMode": "separate"
+  },
+  "versionId": "e2e9092a-d24c-4758-a2da-e8101b76cd56",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "6d00308088d1e0f9854752a9b0783fc9c4cd0c5d7ba070a81ff40e96ec7458a8"
+  },
+  "id": "WNcuDvdO7AMJk6Jc",
+  "tags": []
+}
