@@ -196,7 +196,7 @@ Handles new client registration — validates input, hashes/stores credentials, 
 
 **n8n Workflow**
 
-📷 ![Sign Up Workflow](docs/screenshots/signup-workflow.png)
+![Sign Up Workflow](docs/screenshots/signup-workflow.png)
 
 ---
 
@@ -206,26 +206,18 @@ Validates client credentials against the `users` table and authenticates the cli
 
 **n8n Workflow**
 
-📷 *(Paste Sign In Workflow Screenshot Here)*
+![Sign In Workflow](docs/screenshots/signin-workflow.png)
 
 ---
 
-### 3️⃣ Client Onboarding / Nutrition Assessment Workflow
+### 3️⃣ Assessment & Nutrition Plan Generation Workflow
 
-Collects the client's full nutrition assessment (personal info, medical history, lifestyle, dietary recall, allergies, symptoms, medications, preferences) via a webhook and stores it in the `assessments` table.
-
-**n8n Workflow**
-
-📷 *(Paste Client Onboarding / Assessment Workflow Screenshot Here)*
-
----
-
-### 4️⃣ AI Nutrition Plan Generation Workflow
-
-The core AI workflow:
+Collects the client's full nutrition assessment (personal info, medical history, lifestyle, dietary recall, allergies, symptoms, medications, preferences), then runs the AI pipeline end to end:
 
 ```
-Assessment Retrieved
+Assessment Submitted
+        ↓
+Stored in Supabase
         ↓
 Retrieve Food Database
         ↓
@@ -244,47 +236,27 @@ Store Generated Plans in Supabase
 
 **n8n Workflow**
 
-📷 *(Paste Nutrition Plan Generation Workflow Screenshot Here)*
+![Assessment & Nutrition Plan Generation Workflow](docs/screenshots/assessment-plan-generation-workflow.png)
 
 ---
 
-### 5️⃣ Nutritionist Dashboard / Approval Workflow
-
-Fetches pending plans and assessment details for the dashboard; on doctor approval, updates plan status, applies any edits, and pushes the record forward to scheduling.
-
-**n8n Workflow**
-
-📷 *(Paste Nutritionist Dashboard / Approval Workflow Screenshot Here)*
-
----
-
-### 6️⃣ Appointment Scheduling Workflow
-
-Takes the meeting date, time, and generates a Google Meet link; stores the appointment in the `meetings` table.
-
-**n8n Workflow**
-
-📷 *(Paste Appointment Scheduling Workflow Screenshot Here)*
-
----
-
-### 7️⃣ Nutrition Plan Email Workflow
+### 4️⃣ Nutrition Plan Email Workflow
 
 Once a plan is approved, this workflow builds the email template (plan details, supplements, nutritionist notes, meeting details) and sends it to the client automatically.
 
 **n8n Workflow**
 
-📷 *(Paste Nutrition Plan Email Workflow Screenshot Here)*
+![Nutrition Plan Email Workflow](docs/screenshots/email-workflow.png)
 
 ---
 
-### 8️⃣ Appointment Reminder Workflow
+### 5️⃣ Appointment Reminder Workflow
 
 Runs on a scheduled/cron trigger, checks upcoming meetings, and sends a reminder email to the client with the meeting date, time, and Meet link.
 
 **n8n Workflow**
 
-📷 *(Paste Appointment Reminder Workflow Screenshot Here)*
+![Appointment Reminder Workflow](docs/screenshots/reminder-workflow.png)
 
 ---
 
@@ -407,20 +379,6 @@ Open `frontend/index.html` in a browser (or serve it via any static host) and st
 ✅ Automated Email Notifications & Reminders
 ✅ Supabase Integration
 ✅ REST API & Webhook Communication
-
----
-
-## 🖼️ Screenshots
-
-| Screen | Preview |
-|---|---|
-| Sign Up | 📷 *(Paste Screenshot Here)* |
-| Sign In | 📷 *(Paste Screenshot Here)* |
-| Nutrition Assessment | 📷 *(Paste Screenshot Here)* |
-| Nutritionist Dashboard | 📷 *(Paste Screenshot Here)* |
-| Generated Plans | 📷 *(Paste Screenshot Here)* |
-| Appointment Scheduling | 📷 *(Paste Screenshot Here)* |
-| Email Preview | 📷 *(Paste Screenshot Here)* |
 
 ---
 
