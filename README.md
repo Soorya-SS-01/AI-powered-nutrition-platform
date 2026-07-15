@@ -236,7 +236,7 @@ Store Generated Plans in Supabase
 
 **n8n Workflow**
 
-![Assessment & Nutrition Plan Generation Workflow](docs/screenshots/assessment-plan-generation-workflow.png)
+![Assessment & Nutrition Plan Generation Workflow](docs/screenshots/assessment-workflow.png)
 
 ---
 
@@ -246,7 +246,7 @@ Once a plan is approved, this workflow builds the email template (plan details, 
 
 **n8n Workflow**
 
-![Nutrition Plan Email Workflow](docs/screenshots/email-workflow.png)
+![Nutrition Plan Email Workflow](docs/screenshots/approval-workflow.png)
 
 ---
 
